@@ -22,7 +22,7 @@ func NewInfraStack(scope constructs.Construct, id string, props *InfraStackProps
 	helloWorldFunction := awslambda.NewFunction(stack, jsii.String("GreetFunction"), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),
-		Code:         awslambda.Code_FromAsset(jsii.String("../handlers/greet"), nil),
+		Code:         awslambda.Code_FromAsset(jsii.String("../controllers/greet"), nil),
 		Architecture: awslambda.Architecture_ARM_64(),
 	})
 
