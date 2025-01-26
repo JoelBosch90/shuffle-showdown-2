@@ -49,34 +49,12 @@ WORKDIR="$(dirname "$(readlink -f "$0")")";
 
 ################################################################################
 #
-#   test
-#       Function to locally run the full test suite.
-#
-################################################################################
-# test () {
-
-# }
-
-################################################################################
-#
-#   release
-#       Function to release all development changes to production. GitHub
-#       actions will pick this up and automatically release them on the live
-#       server as well.
-#
-################################################################################
-# release () {
-
-# }
-
-################################################################################
-#
-#   buildServer
+#   build_server
 #       Function to locally build the server application to make it ready to
 #       deploy.
 #
 ################################################################################
-buildServer () {
+build_server () {
   cd $WORKDIR/server/commands;
 
   ./build.sh;
@@ -90,17 +68,49 @@ buildServer () {
 #
 ################################################################################
 build () {
-  buildServer;
+  build_server;
 }
 
 ################################################################################
 #
-#   deployServer
+#   testServer
+#       Function to locally run the full test suite for the server application.
+#
+################################################################################
+test_server () {
+  cd $WORKDIR/server/commands;
+
+  ./test.sh;
+}
+
+################################################################################
+#
+#   test
+#       Function to locally run the full test suite.
+#
+################################################################################
+test () {
+  test_server;
+}
+
+################################################################################
+#
+#   run
+#       Function to spin up a local development environment.
+#
+################################################################################
+# run () {
+
+# }
+
+################################################################################
+#
+#   deploy_server
 #       Function to deploy the infrastructure for the server application to the
 #       cloud.
 #
 ################################################################################
-deployServer () {
+deploy_server () {
   cd $WORKDIR/server/commands;
 
   ./deploy.sh;
@@ -114,19 +124,20 @@ deployServer () {
 #
 ################################################################################
 deploy () {
-  deployServer;
+  deploy_server;
 }
 
 ################################################################################
 #
-#   run
-#       Function to spin up a local development environment.
+#   release
+#       Function to release all development changes to production. GitHub
+#       actions will pick this up and automatically release them on the live
+#       server as well.
 #
 ################################################################################
-# run () {
+# release () {
 
 # }
-
 
 # Loop through the command line arguments.
 while [[ $# -gt 0 ]]; do
@@ -138,14 +149,19 @@ while [[ $# -gt 0 ]]; do
   # Determine per command what to do.
   case "$command" in
 
-    # Run `shuffle build` to build the server and client applications.
+    # Run `shuffle test` to run the full test suite for all application.
+    test)
+      test
+      shift # Get ready to process the next command.
+      ;;
+
+    # Run `shuffle build` to build all applications.
     build)
       build
       shift # Get ready to process the next command.
       ;;
 
-    # Run `shuffle deploy` to deploy the server and client applications to the
-    # cloud.
+    # Run `shuffle deploy` to deploy all applications to the cloud.
     deploy)
       deploy
       shift # Get ready to process the next command.
@@ -155,20 +171,6 @@ while [[ $# -gt 0 ]]; do
     # development branch and roll those changes out to the live version.
     release)
       release
-      shift # Get ready to process the next command.
-      ;;
-
-    # Run `shuffle development` to run a local development instance of the
-    # Shuffle Showdown setup application.
-    d|development)
-      runDevelopment "$argument"
-      shift # Get ready to process the next command.
-      ;;
-
-    # Run `shuffle production` to run a local example of the production release
-    # of the Shuffle Showdown setup application.
-    p|production)
-      runProduction "$argument"
       shift # Get ready to process the next command.
       ;;
   esac

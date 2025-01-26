@@ -18,6 +18,7 @@ for controller_directory in $controllers_directory/*/; do
     cd "$controller_directory"
 
     echo "Building controller in $controller_directory"
+    go mod tidy
     GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o bootstrap
     
     cd - > /dev/null

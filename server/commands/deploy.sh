@@ -13,4 +13,5 @@ server_root_directory="${current_directory%/*}"
 infrastructure_directory="$server_root_directory/src/infrastructure"
 
 cd $infrastructure_directory
+cdk synth
 cdk deploy
