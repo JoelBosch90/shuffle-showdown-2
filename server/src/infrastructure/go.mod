@@ -8,6 +8,7 @@ require (
 	github.com/aws/aws-cdk-go/awscdk/v2 v2.175.1
 	github.com/aws/constructs-go/constructs/v10 v10.4.2
 	github.com/aws/jsii-runtime-go v1.106.0
+	github.com/golang/mock v1.6.0
 )
 
 require (

@@ -11,7 +11,7 @@ type NewStack struct {
 }
 
 func (m *NewStack) Get() interfaces.NewStack {
-	return func(app interfaces.App, id *string, props *awscdk.StackProps) awscdk.Stack {
+	return func(app interfaces.App, id *string, props *awscdk.StackProps) interfaces.Stack {
 		m.timesCalled++
 
 		return nil

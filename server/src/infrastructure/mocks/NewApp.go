@@ -12,8 +12,8 @@ type NewApp struct {
 
 func (m *NewApp) Get() interfaces.NewApp {
 	return func(props *awscdk.AppProps) interfaces.App {
-		m.timesCalled += 1
+		m.timesCalled++
 
-		return &App{}
+		return nil
 	}
 }

@@ -12,7 +12,7 @@ type CreateLambda struct {
 }
 
 func (m *CreateLambda) Get() interfaces.CreateLambda {
-	return func(stack awscdk.Stack, params interfaces.LambdaParameters) awslambda.Function {
+	return func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi) awslambda.Function {
 		m.timesCalled++
 
 		return nil

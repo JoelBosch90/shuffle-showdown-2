@@ -16,11 +16,11 @@ func main() {
 		func(props *awscdk.AppProps) interfaces.App {
 			return awscdk.NewApp(props)
 		},
-		func(app interfaces.App, stackId *string, props *awscdk.StackProps) awscdk.Stack {
+		func(app interfaces.App, stackId *string, props *awscdk.StackProps) interfaces.Stack {
 			return awscdk.NewStack(app, stackId, props)
 		},
-		func(stack awscdk.Stack, params interfaces.LambdaParameters) awslambda.Function {
-			return createLambda(stack, params)
+		func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi) awslambda.Function {
+			return createLambda(stack, params, newFunction, newApi)
 		},
 		jsii.Close,
 		nil,
