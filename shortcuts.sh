@@ -49,6 +49,18 @@ WORKDIR="$(dirname "$(readlink -f "$0")")";
 
 ################################################################################
 #
+#   generate_mocks_server
+#       Function to locally generate all mocks for the server application.
+#
+################################################################################
+generate_mocks_server () {
+  cd $WORKDIR/server/commands;
+
+  ./generate_mocks.sh;
+}
+
+################################################################################
+#
 #   build_server
 #       Function to locally build the server application to make it ready to
 #       deploy.
@@ -148,6 +160,12 @@ while [[ $# -gt 0 ]]; do
 
   # Determine per command what to do.
   case "$command" in
+
+    # Run `shuffle mock` to generate all mocks for the server application.
+    mock)
+      generate_mocks_server
+      shift # Get ready to process the next command.
+      ;;
 
     # Run `shuffle test` to run the full test suite for all application.
     test)
