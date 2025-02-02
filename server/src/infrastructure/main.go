@@ -4,12 +4,25 @@
 package main
 
 import (
-	"infrastructure/lambda"
+	"infrastructure/interfaces"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/jsii-runtime-go"
 )
 
 func main() {
-	setup(jsii.Close, func(props *awscdk.AppProps) App { return awscdk.NewApp(props) }, nil, &lambda.Collection{})
+	setup(
+		func(props *awscdk.AppProps) interfaces.App {
+			return awscdk.NewApp(props)
+		},
+		func(app interfaces.App, stackId *string, props *awscdk.StackProps) awscdk.Stack {
+			return awscdk.NewStack(app, stackId, props)
+		},
+		func(stack awscdk.Stack, params interfaces.LambdaParameters) awslambda.Function {
+			return CreateLambda(stack, params)
+		},
+		jsii.Close,
+		nil,
+	)
 }

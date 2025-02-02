@@ -1,5 +1,9 @@
 package main
 
-func setup(start func(handler interface{})) {
+import (
+	"greet/interfaces"
+)
+
+func setup(start interfaces.LambdaStarter) {
 	start(handler)
 }

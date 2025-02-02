@@ -8,16 +8,18 @@ import (
 
 func TestHandler(t *testing.T) {
 	// GIVEN
-	var tests = []struct {
-		name  string
-		given events.APIGatewayProxyRequest
-		want  events.APIGatewayProxyResponse
-		error error
-	}{
+	type testCase struct {
+		name     string
+		request  events.APIGatewayProxyRequest
+		response events.APIGatewayProxyResponse
+		error    error
+	}
+
+	testCases := []testCase{
 		{
-			name:  "Accepts an empty request",
-			given: events.APIGatewayProxyRequest{},
-			want: events.APIGatewayProxyResponse{
+			name:    "Accepts an empty request",
+			request: events.APIGatewayProxyRequest{},
+			response: events.APIGatewayProxyResponse{
 				StatusCode: 200,
 				Body:       "Hello, wordy world!",
 			},
@@ -25,10 +27,10 @@ func TestHandler(t *testing.T) {
 		},
 		{
 			name: "Ignores the request body",
-			given: events.APIGatewayProxyRequest{
+			request: events.APIGatewayProxyRequest{
 				Body: "Hello, world!",
 			},
-			want: events.APIGatewayProxyResponse{
+			response: events.APIGatewayProxyResponse{
 				StatusCode: 200,
 				Body:       "Hello, wordy world!",
 			},
@@ -36,20 +38,21 @@ func TestHandler(t *testing.T) {
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
 			// SETUP
 			t.Parallel()
 
 			// WHEN
-			got, error := handler(test.given)
+			got, error := handler(testCase.request)
 
 			// THEN
-			if error != test.error {
+			if error != testCase.error {
 				t.Errorf("handler returned unexpected error: %v", error)
 			}
-			if got.StatusCode != test.want.StatusCode || got.Body != test.want.Body {
-				t.Errorf("handler = %v, want %v", got, test.want)
+
+			if got.StatusCode != testCase.response.StatusCode || got.Body != testCase.response.Body {
+				t.Errorf("handler = %v, want %v", got, testCase.response)
 			}
 		})
 	}
