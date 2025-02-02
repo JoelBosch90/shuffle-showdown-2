@@ -5,11 +5,11 @@ import (
 	"reflect"
 )
 
-type LambdaStarter struct {
+type StartLambda struct {
 	Function
 }
 
-func (m *LambdaStarter) GetFunction() interfaces.LambdaStarter {
+func (m *StartLambda) Get() interfaces.StartLambda {
 	return func(handler interface{}) {
 		m.timesCalled += 1
 		callbackType := reflect.TypeOf(handler)

@@ -20,7 +20,7 @@ func main() {
 			return awscdk.NewStack(app, stackId, props)
 		},
 		func(stack awscdk.Stack, params interfaces.LambdaParameters) awslambda.Function {
-			return CreateLambda(stack, params)
+			return createLambda(stack, params)
 		},
 		jsii.Close,
 		nil,

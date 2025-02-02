@@ -9,14 +9,19 @@ type FunctionMocker interface {
 }
 
 type Function struct {
+	t           *testing.T
 	timesCalled int
 }
 
-func (m *Function) GetTimesCalled() int {
+func (m *Function) SetT(t *testing.T) {
+	m.t = t
+}
+
+func (m *Function) TimesCalled() int {
 	return m.timesCalled
 }
 
-func (m *Function) GetFunction() func() {
+func (m *Function) Get() func() {
 	return func() {
 		m.timesCalled++
 	}

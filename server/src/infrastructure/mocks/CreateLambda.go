@@ -7,11 +7,11 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 )
 
-type LambdaCreator struct {
+type CreateLambda struct {
 	Function
 }
 
-func (m *LambdaCreator) GetFunction() interfaces.LambdaCreator {
+func (m *CreateLambda) Get() interfaces.CreateLambda {
 	return func(stack awscdk.Stack, params interfaces.LambdaParameters) awslambda.Function {
 		m.timesCalled++
 

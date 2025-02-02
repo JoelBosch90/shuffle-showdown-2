@@ -9,7 +9,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func CreateLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters) awslambda.Function {
+func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters) awslambda.Function {
 	lambda := awslambda.NewFunction(stack, jsii.String(parameters.Name), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),

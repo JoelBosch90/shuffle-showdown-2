@@ -11,18 +11,18 @@ func TestSetup(t *testing.T) {
 		// SETUP
 		t.Parallel()
 
-		mockLambdaStarter := mocks.LambdaStarter{}
+		mockLambdaStarter := mocks.StartLambda{}
 		mockLambdaStarter.SetT(t)
 
 		// WHEN
-		setup(mockLambdaStarter.GetFunction())
+		setup(mockLambdaStarter.Get())
 
 		// THEN
-		if mockLambdaStarter.GetTimesCalled() < 1 {
+		if mockLambdaStarter.TimesCalled() < 1 {
 			t.Errorf("Start callback was never called.")
 		}
 
-		if mockLambdaStarter.GetTimesCalled() > 1 {
+		if mockLambdaStarter.TimesCalled() > 1 {
 			t.Errorf("Start callback was called too many times.")
 		}
 	})

@@ -5,7 +5,7 @@ import "testing"
 type FunctionMocker interface {
 	SetT(t *testing.T)
 	GetTimesCalled() int
-	GetFunction() interface{}
+	GetFunction() func()
 }
 
 type Function struct {
@@ -17,14 +17,12 @@ func (m *Function) SetT(t *testing.T) {
 	m.t = t
 }
 
-func (m *Function) GetTimesCalled() int {
+func (m *Function) TimesCalled() int {
 	return m.timesCalled
 }
 
-func (m *Function) GetFunction() interface{} {
-	return func(handler interface{}) interface{} {
+func (m *Function) Get() func() {
+	return func() {
 		m.timesCalled++
-
-		return nil
 	}
 }

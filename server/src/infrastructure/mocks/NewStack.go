@@ -6,11 +6,11 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 )
 
-type StackCreator struct {
+type NewStack struct {
 	Function
 }
 
-func (m *StackCreator) GetFunction() interfaces.StackCreator {
+func (m *NewStack) Get() interfaces.NewStack {
 	return func(app interfaces.App, id *string, props *awscdk.StackProps) awscdk.Stack {
 		m.timesCalled++
 

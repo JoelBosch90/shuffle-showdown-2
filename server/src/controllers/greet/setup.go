@@ -4,6 +4,6 @@ import (
 	"greet/interfaces"
 )
 
-func setup(start interfaces.LambdaStarter) {
+func setup(start interfaces.StartLambda) {
 	start(handler)
 }

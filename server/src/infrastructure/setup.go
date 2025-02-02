@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 )
 
-func setup(createApp interfaces.AppCreator, createStack interfaces.StackCreator, createLambda interfaces.LambdaCreator, closeRunTime func(), environment *awscdk.Environment) {
+func setup(createApp interfaces.NewApp, createStack interfaces.NewStack, createLambda interfaces.CreateLambda, closeRunTime func(), environment *awscdk.Environment) {
 	defer closeRunTime()
 
 	app := createApp(nil)
