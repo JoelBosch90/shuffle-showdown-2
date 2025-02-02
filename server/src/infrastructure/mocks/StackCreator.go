@@ -11,7 +11,7 @@ type StackCreator struct {
 }
 
 func (m *StackCreator) GetFunction() interfaces.StackCreator {
-	return func(app App, id *string, props *awscdk.StackProps) awscdk.Stack {
+	return func(app interfaces.App, id *string, props *awscdk.StackProps) awscdk.Stack {
 		m.timesCalled++
 
 		return nil

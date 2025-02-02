@@ -18,7 +18,7 @@ func TestSetup(t *testing.T) {
 
 		// GIVEN
 		mockAppCreator := mocks.AppCreator{}
-		mockStackCreator := mocks.Function{}
+		mockStackCreator := mocks.StackCreator{}
 		mockLambdaCreator := mocks.LambdaCreator{}
 		mockCloseRuntime := mocks.Function{}
 
@@ -26,11 +26,21 @@ func TestSetup(t *testing.T) {
 		setup(mockAppCreator.GetFunction(), mockStackCreator.GetFunction(), mockLambdaCreator.GetFunction(), mockCloseRuntime.GetFunction(), &awscdk.Environment{})
 
 		// THEN
-		// if closeRuntimeCalled != 1 {
-		// 	t.Errorf("Expected mockCloseRuntime to be called once, but was called %d times", closeRuntimeCalled)
-		// }
-		// if appCreatorCalled != 1 {
-		// 	t.Errorf("Expected mockAppCreator to be called once, but was called %d times", appCreatorCalled)
-		// }
+		appCreatorCalled := mockAppCreator.GetTimesCalled()
+		if appCreatorCalled != 1 {
+			t.Errorf("Expected createApp to be called once, but was called %d times", appCreatorCalled)
+		}
+		createStackCalled := mockStackCreator.GetTimesCalled()
+		if createStackCalled != 1 {
+			t.Errorf("Expected createStack to be called once, but was called %d times", createStackCalled)
+		}
+		createLambdaCalled := mockLambdaCreator.GetTimesCalled()
+		if createLambdaCalled != 1 {
+			t.Errorf("Expected createLambda to be called once, but was called %d times", createLambdaCalled)
+		}
+		closeRuntimeCalled := mockCloseRuntime.GetTimesCalled()
+		if closeRuntimeCalled != 1 {
+			t.Errorf("Expected closeRuntime to be called once, but was called %d times", closeRuntimeCalled)
+		}
 	})
 }
