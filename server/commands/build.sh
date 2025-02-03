@@ -24,12 +24,12 @@ build_directory() {
   fi
 }
 
-# Test infrastructure.
+# Build infrastructure.
 build_infrastructure() {
   build_directory $server_root_directory/src/infrastructure/
 }
 
-# Test all controllers in the project.
+# Build all controllers in the project.
 build_controllers() {
   for controller_directory in $server_root_directory/src/controllers/*/; do
     build_directory $controller_directory

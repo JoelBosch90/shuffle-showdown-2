@@ -1,5 +1,5 @@
 {
-  "app": "go mod download && go run infrastructure.go",
+  "app": "go mod download && go build -o bootstrap . && ./bootstrap",
   "watch": {
     "include": [
       "**"

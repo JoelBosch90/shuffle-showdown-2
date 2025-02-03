@@ -8,7 +8,6 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/aws/jsii-runtime-go"
 )
@@ -21,15 +20,11 @@ func main() {
 		func(app interfaces.App, stackId *string, props *awscdk.StackProps) interfaces.Stack {
 			return awscdk.NewStack(app, stackId, props)
 		},
-		func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration) awslambda.Function {
-			return createLambda(stack, params, newFunction, newApi, newIntegration)
-		},
+		createLambda,
 		func(scope constructs.Construct, id *string, props *awsapigateway.LambdaRestApiProps) interfaces.RestApi {
 			return awsapigateway.NewLambdaRestApi(scope, id, props)
 		},
-		func(handler awslambda.IFunction, options *awsapigateway.LambdaIntegrationOptions) awsapigateway.LambdaIntegration {
-			return awsapigateway.NewLambdaIntegration(handler, options)
-		},
+		awsapigateway.NewLambdaIntegration,
 		jsii.Close,
 		nil,
 	)
