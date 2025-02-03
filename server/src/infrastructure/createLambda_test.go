@@ -1,71 +1,102 @@
 package main
 
 import (
+	"infrastructure/interfaces"
 	"infrastructure/mocks"
 	"testing"
 
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/golang/mock/gomock"
 )
+
+type MockNewFunction struct {
+	mocks.Function
+}
+
+func (m *MockNewFunction) Get() interfaces.NewFunction {
+	return func(scope constructs.Construct, id *string, props *awslambda.FunctionProps) awslambda.Function {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return nil
+	}
+}
+
+type MockNewLambdaRestApi struct {
+	mocks.Function
+	api interfaces.RestApi
+}
+
+func (m *MockNewLambdaRestApi) SetApi(api interfaces.RestApi) {
+	m.api = api
+}
+
+func (m *MockNewLambdaRestApi) Get() interfaces.NewLambdaRestApi {
+	return func(scope constructs.Construct, id *string, props *awsapigateway.LambdaRestApiProps) interfaces.RestApi {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return m.api
+	}
+}
+
+type MockNewLambdaIntegration struct {
+	mocks.Function
+}
+
+func (m *MockNewLambdaIntegration) Get() interfaces.NewLambdaIntegration {
+	return func(handler awslambda.IFunction, options *awsapigateway.LambdaIntegrationOptions) awsapigateway.LambdaIntegration {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return nil
+	}
+}
 
 func TestCreateLambda(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	mockStack := mocks.NewMockStack(controller)
+	t.Run("interfaces.createLambda", func(t *testing.T) {
+		// SETUP
+		t.Parallel()
 
-	// // GIVEN
-	// type testCase struct {
-	// 	stack       awscdk.Stack
-	// 	parameters  interfaces.LambdaParameters
-	// 	newFunction interfaces.NewFunction
-	// 	newApi      interfaces.NewLambdaRestApi
-	// }
+		// GIVEN
+		mockStack := mocks.NewMockStack(controller)
+		mockIResource := mocks.NewMockIResource(controller)
+		mockResource := mocks.NewMockResource(controller)
+		mockApi := mocks.NewMockRestApi(controller)
+		mockApi.EXPECT().Root().Return(mockIResource).Times(1)
+		mockIResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockResource).Times(1)
+		mockResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 
-	// testCases := []testCase{
-	// 	{
-	// 		stack: mockStack,
-	// 		parameters: interfaces.LambdaParameters{
-	// 			Name:       "GreetFunction",
-	// 			SourcePath: "../controllers/greet",
-	// 			UrlPath:    "hello",
-	// 			Gateway:    "HelloWorldGateway",
-	// 		},
-	// 		newFunction: mocks.NewFunction,
-	// 		newApi:      mocks.NewLambdaRestApi,
-	// 	},
-	// }
+		mockNewFunction := MockNewFunction{}
+		mockNewApi := MockNewLambdaRestApi{}
+		mockNewApi.SetApi(mockApi)
+		mockNewIntegration := MockNewLambdaIntegration{}
+		mockLambdaParameters := interfaces.LambdaParameters{
+			Name:       "GreetFunction",
+			SourcePath: "../controllers/greet",
+			UrlPath:    "hello",
+			Gateway:    "HelloWorldGateway",
+		}
 
-	// for _, testCase := range testCases {
-	// 	t.Run(testCase.name, func(t *testing.T) {
-	// 		// SETUP
-	// 		t.Parallel()
+		// WHEN
+		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get())
 
-	// 		// GIVEN
-	// 		mockAppCreator := mocks.AppCreator{}
-	// 		mockStackCreator := mocks.StackCreator{}
-	// 		mockLambdaCreator := mocks.LambdaCreator{}
-	// 		mockCloseRuntime := mocks.Function{}
+		// THEN
+		newFunctionTimesCalled := mockNewFunction.TimesCalled()
+		if newFunctionTimesCalled != 1 {
+			t.Errorf("Expected newFunction to be called once, but was called %d times", newFunctionTimesCalled)
+		}
 
-	// 		// WHEN
-	// 		createLambda(mockAppCreator.GetFunction(), mockStackCreator.GetFunction(), mockLambdaCreator.GetFunction(), mockCloseRuntime.GetFunction(), &awscdk.Environment{})
+		newApiTimesCalled := mockNewApi.TimesCalled()
+		if newApiTimesCalled != 1 {
+			t.Errorf("Expected newApi to be called once, but was called %d times", newApiTimesCalled)
+		}
 
-	// 		// // THEN
-	// 		// appCreatorCalled := mockAppCreator.GetTimesCalled()
-	// 		// if appCreatorCalled != 1 {
-	// 		// 	t.Errorf("Expected createApp to be called once, but was called %d times", appCreatorCalled)
-	// 		// }
-	// 		// createStackCalled := mockStackCreator.GetTimesCalled()
-	// 		// if createStackCalled != 1 {
-	// 		// 	t.Errorf("Expected createStack to be called once, but was called %d times", createStackCalled)
-	// 		// }
-	// 		// createLambdaCalled := mockLambdaCreator.GetTimesCalled()
-	// 		// if createLambdaCalled != 1 {
-	// 		// 	t.Errorf("Expected createLambda to be called once, but was called %d times", createLambdaCalled)
-	// 		// }
-	// 		// closeRuntimeCalled := mockCloseRuntime.GetTimesCalled()
-	// 		// if closeRuntimeCalled != 1 {
-	// 		// 	t.Errorf("Expected closeRuntime to be called once, but was called %d times", closeRuntimeCalled)
-	// 		// }
-	// 	})
-	// }
+		newIntegrationTimesCalled := mockNewIntegration.TimesCalled()
+		if newIntegrationTimesCalled != 1 {
+			t.Errorf("Expected newIntegration to be called once, but was called %d times", newIntegrationTimesCalled)
+		}
+	})
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi) awslambda.Function {
+func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration) awslambda.Function {
 	lambda := newFunction(stack, jsii.String(parameters.Name), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),
@@ -23,7 +23,8 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	})
 
 	helloResource := api.Root().AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
-	helloResource.AddMethod(jsii.String("GET"), awsapigateway.NewLambdaIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{}), &awsapigateway.MethodOptions{})
+	integration := newIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{})
+	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
 	return lambda
 }

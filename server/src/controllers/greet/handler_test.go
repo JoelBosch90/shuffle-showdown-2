@@ -17,7 +17,7 @@ func TestHandler(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name:    "Accepts an empty request",
+			name:    "greet.handler: Accepts an empty request",
 			request: events.APIGatewayProxyRequest{},
 			response: events.APIGatewayProxyResponse{
 				StatusCode: 200,
@@ -26,7 +26,7 @@ func TestHandler(t *testing.T) {
 			error: nil,
 		},
 		{
-			name: "Ignores the request body",
+			name: "greet.handler: Ignores the request body",
 			request: events.APIGatewayProxyRequest{
 				Body: "Hello, world!",
 			},
