@@ -45,7 +45,8 @@
 ################################################################################
 
 # Get access to the project's working directory.
-WORKDIR="$(dirname "$(readlink -f "$0")")";
+WORKING_DIRECTORY="$(dirname "$(readlink -f "$0")")";
+SERVER_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/server/commands";
 
 ################################################################################
 #
@@ -54,7 +55,7 @@ WORKDIR="$(dirname "$(readlink -f "$0")")";
 #
 ################################################################################
 mock_server () {
-  cd $WORKDIR/server/commands;
+  cd $SERVER_COMMANDS_DIRECTORY;
 
   ./mock.sh;
 }
@@ -77,7 +78,7 @@ mock () {
 #
 ################################################################################
 build_server () {
-  cd $WORKDIR/server/commands;
+  cd $SERVER_COMMANDS_DIRECTORY;
 
   ./build.sh;
 }
@@ -100,7 +101,7 @@ build () {
 #
 ################################################################################
 test_server () {
-  cd $WORKDIR/server/commands;
+  cd $SERVER_COMMANDS_DIRECTORY;
 
   ./test.sh;
 }
@@ -122,7 +123,7 @@ test () {
 #
 ################################################################################
 run_server () {
-  cd $WORKDIR/server/commands;
+  cd $SERVER_COMMANDS_DIRECTORY;
 
   ./run.sh;
 }
@@ -145,7 +146,7 @@ run () {
 #
 ################################################################################
 deploy_server () {
-  cd $WORKDIR/server/commands;
+  cd $SERVER_COMMANDS_DIRECTORY;
 
   ./deploy.sh;
 }
