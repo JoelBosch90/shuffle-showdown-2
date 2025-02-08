@@ -49,14 +49,24 @@ WORKDIR="$(dirname "$(readlink -f "$0")")";
 
 ################################################################################
 #
-#   generate_mocks_server
-#       Function to locally generate all mocks for the server application.
+#   mock_server
+#       Function to generate mocks for the server application.
 #
 ################################################################################
-generate_mocks_server () {
+mock_server () {
   cd $WORKDIR/server/commands;
 
-  ./generate_mocks.sh;
+  ./mock.sh;
+}
+
+################################################################################
+#
+#   mock
+#       Function to generate mocks for all applications.
+#
+################################################################################
+mock () {
+  mock_server;
 }
 
 ################################################################################
@@ -108,12 +118,24 @@ test () {
 ################################################################################
 #
 #   run
+#       Function to spin up a local server development environment.
+#
+################################################################################
+run_server () {
+  cd $WORKDIR/server/commands;
+
+  ./run.sh;
+}
+
+################################################################################
+#
+#   run
 #       Function to spin up a local development environment.
 #
 ################################################################################
-# run () {
-
-# }
+run () {
+  run_server;
+}
 
 ################################################################################
 #
@@ -161,9 +183,15 @@ while [[ $# -gt 0 ]]; do
   # Determine per command what to do.
   case "$command" in
 
+    # Run `shuffle run` to spin up a local development environment.
+    run)
+      run
+      shift # Get ready to process the next command.
+      ;;
+
     # Run `shuffle mock` to generate all mocks for the server application.
     mock)
-      generate_mocks_server
+      mock
       shift # Get ready to process the next command.
       ;;
 

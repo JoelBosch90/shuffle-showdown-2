@@ -20,3 +20,6 @@ cdk.out
 
 # Ignore the compiled bootstrap files required for the CDK
 bootstrap
+
+# Ignore the localstack files and directories
+localstack_*
