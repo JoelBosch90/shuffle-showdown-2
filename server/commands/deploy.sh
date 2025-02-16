@@ -10,7 +10,7 @@
 
 current_directory=$(pwd)
 server_root_directory="${current_directory%/*}"
-infrastructure_directory="$server_root_directory/src/infrastructure"
+infrastructure_directory="$server_root_directory/infrastructure"
 
 cd $infrastructure_directory
 cdk synth

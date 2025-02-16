@@ -32,7 +32,7 @@ func setup(
 	lambdasToCreate := []interfaces.LambdaParameters{
 		{
 			Name:       "GreetFunction",
-			SourcePath: "../controllers/greet",
+			SourcePath: "../src/controllers/greet",
 			UrlPath:    "hello",
 			Gateway:    "HelloWorldGateway",
 		},
