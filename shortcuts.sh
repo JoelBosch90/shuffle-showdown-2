@@ -47,6 +47,7 @@
 # Get access to the project's working directory.
 WORKING_DIRECTORY="$(dirname "$(readlink -f "$0")")";
 SERVER_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/server/commands";
+CLIENT_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/client/commands";
 
 ################################################################################
 #
@@ -153,13 +154,26 @@ deploy_server () {
 
 ################################################################################
 #
+#   deploy_client
+#       Function to deploy the infrastructure for the client application to the
+#       cloud.
+#
+################################################################################
+deploy_client () {
+  cd $CLIENT_COMMANDS_DIRECTORY;
+
+  ./deploy.sh;
+}
+
+################################################################################
+#
 #   deploy
 #       Function to deploy the infrastructure for the server and client
 #       applications to the cloud.
 #
 ################################################################################
 deploy () {
-  deploy_server;
+  deploy_server & deploy_client & wait;
 }
 
 ################################################################################
