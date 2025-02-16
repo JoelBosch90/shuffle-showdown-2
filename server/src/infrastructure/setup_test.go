@@ -98,7 +98,7 @@ func TestSetup(t *testing.T) {
 		mockCloseRuntime := mocks.Function{}
 
 		// WHEN
-		setup(mockNewApp.Get(), mockNewStack.Get(), mockCreateLambda.Get(), mockNewLambdaRestApi.Get(), mockNewLambdaIntegration.Get(), mockCloseRuntime.Get(), &awscdk.Environment{})
+		setup(mockNewApp.Get(), mockNewStack.Get(), mockCreateLambda.Get(), mockNewLambdaRestApi.Get(), mockNewLambdaIntegration.Get(), mockCloseRuntime.Get(), nil)
 
 		// THEN
 		appCreatorCalled := mockNewApp.TimesCalled()

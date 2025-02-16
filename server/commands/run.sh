@@ -33,4 +33,5 @@ deploy_cdk_stack() {
   cdklocal deploy --require-approval never
 }
 
-start_localstack & deploy_cdk_stack & wait
+# Wait a few seconds for LocalStack to start before deploying the CDK stack
+start_localstack & sleep 5 && deploy_cdk_stack & wait

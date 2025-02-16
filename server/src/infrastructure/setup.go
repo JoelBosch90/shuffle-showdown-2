@@ -24,9 +24,7 @@ func setup(
 	stack := createStack(
 		app,
 		&stackId,
-		&awscdk.StackProps{
-			Env: environment,
-		},
+		&awscdk.StackProps{},
 	)
 
 	lambdasToCreate := []interfaces.LambdaParameters{
