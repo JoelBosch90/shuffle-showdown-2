@@ -20,11 +20,13 @@ func setup(
 
 	app := createApp(nil)
 
-	stackId := "InfrastructureStack"
+	stackId := "ServerStack"
 	stack := createStack(
 		app,
 		&stackId,
-		&awscdk.StackProps{},
+		&awscdk.StackProps{
+			Env: environment,
+		},
 	)
 
 	lambdasToCreate := []interfaces.LambdaParameters{
