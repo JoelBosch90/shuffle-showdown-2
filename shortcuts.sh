@@ -119,7 +119,30 @@ test () {
 
 ################################################################################
 #
-#   run
+#   run_localstack
+#       Function to spin up a local version of the AWS cloud.
+#
+################################################################################
+run_localstack () {
+  cd $WORKING_DIRECTORY;
+  docker-compose up
+}
+
+################################################################################
+#
+#   run_client
+#       Function to spin up a local client development environment.
+#
+################################################################################
+run_client () {
+  cd $CLIENT_COMMANDS_DIRECTORY;
+
+  ./run.sh;
+}
+
+################################################################################
+#
+#   run_server
 #       Function to spin up a local server development environment.
 #
 ################################################################################
@@ -136,7 +159,9 @@ run_server () {
 #
 ################################################################################
 run () {
-  run_server;
+  # Allow for time to start up the localstack first.
+  # Then deploy the server and client to the localstack.
+  run_localstack & sleep 5 && run_server && run_client & wait;
 }
 
 ################################################################################

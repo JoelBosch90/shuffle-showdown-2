@@ -1,1 +1,4 @@
 .env
+
+# Ignore the localstack files and directories
+localstack_*

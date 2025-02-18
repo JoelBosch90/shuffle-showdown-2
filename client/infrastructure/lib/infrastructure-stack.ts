@@ -8,6 +8,7 @@ export class InfrastructureStack extends Stack {
     super(scope, id, props)
 
     const bucket = new Bucket(this, 'Website', {
+      bucketName: 'website',
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'error.html',
       publicReadAccess: true,

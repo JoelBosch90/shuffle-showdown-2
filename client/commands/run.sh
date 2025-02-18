@@ -4,15 +4,15 @@
 #   Run
 #
 #       This bash file runs all commands to setup up a local development
-#       environment for the server.
+#       environment for the client.
 #
 ################################################################################
 
 current_directory=$(pwd)
-server_root_directory="${current_directory%/*}"
-infrastructure_directory="$server_root_directory/infrastructure"
+client_root_directory="${current_directory%/*}"
+infrastructure_directory="$client_root_directory/infrastructure"
 
-echo "Deploying the Server CDK stack to LocalStack"
+echo "Deploying the Client CDK stack to LocalStack"
 cd $infrastructure_directory
 
 # Set dummy AWS credentials
@@ -24,3 +24,7 @@ export AWS_REGION=eu-central-1
 cdklocal bootstrap
 cdklocal synth
 cdklocal deploy --require-approval never
+
+# Sync local assets to the LocalStack S3 bucket
+aws s3 sync $client_root_directory/src/assets s3://website --endpoint-url http://localhost:4566
+aws s3 website s3://website --index-document index.html --error-document error.html --endpoint-url http://localhost:4566
