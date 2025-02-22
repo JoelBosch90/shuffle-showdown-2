@@ -1,4 +1,5 @@
-import { Stack, StackProps, CfnOutput, RemovalPolicy } from 'aws-cdk-lib'
+import { Stack, StackProps, CfnOutput, RemovalPolicy, Aws } from 'aws-cdk-lib'
+import { CfnDisk } from 'aws-cdk-lib/aws-lightsail'
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3'
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 import { Construct } from 'constructs'
@@ -8,7 +9,7 @@ export class InfrastructureStack extends Stack {
     super(scope, id, props)
 
     const bucket = new Bucket(this, 'Website', {
-      bucketName: 'website',
+      bucketName: `clientstack-website-${Aws.ACCOUNT_ID}-${Aws.REGION}`,
       websiteIndexDocument: 'index.html',
       websiteErrorDocument: 'error.html',
       publicReadAccess: true,
@@ -18,7 +19,7 @@ export class InfrastructureStack extends Stack {
     })
 
     new BucketDeployment(this, 'DeployWebsite', {
-      sources: [Source.asset('../src/assets')],
+      sources: [Source.asset('../source/assets')],
       destinationBucket: bucket,
     })
 

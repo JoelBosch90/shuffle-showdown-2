@@ -47,7 +47,7 @@ test_infrastructure() {
 
 # Test all controllers in the project.
 test_controllers() {
-  for controller_directory in $server_root_directory/src/controllers/*/; do
+  for controller_directory in $server_root_directory/source/controllers/*/; do
     if [ -d "$controller_directory" ]; then
       test_directory "$controller_directory"
     fi

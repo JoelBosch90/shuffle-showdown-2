@@ -3,14 +3,16 @@
 #
 #   Build
 #
-#       This bash file builds the cdk stack for the client.
+#       This bash file locally builds the client.
 #
 ################################################################################
 
 current_directory=$(pwd)
 client_root_directory="${current_directory%/*}"
-infrastructure_directory="$client_root_directory/src/infrastructure"
+infrastructure_directory="$client_root_directory/infrastructure"
 
-cd $infrastructure_directory
-npm install
-npm run build
+# Build the infrastructure.
+# cd $infrastructure_directory
+# npm install > /dev/null
+# npm run build > /dev/null
+# echo "Built $infrastructure_directory"

@@ -1,0 +1,5 @@
+mode: set
+infrastructure/createLambda.go:12.218,30.2 6 1
+infrastructure/setup.go:18.3,41.47 6 1
+infrastructure/setup.go:41.47,49.3 1 1
+infrastructure/setup.go:51.2,51.16 1 1

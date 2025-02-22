@@ -26,5 +26,5 @@ cdklocal synth
 cdklocal deploy --require-approval never
 
 # Sync local assets to the LocalStack S3 bucket
-aws s3 sync $client_root_directory/src/assets s3://website --endpoint-url http://localhost:4566
+aws s3 sync $client_root_directory/source/assets s3://website --endpoint-url http://localhost:4566
 aws s3 website s3://website --index-document index.html --error-document error.html --endpoint-url http://localhost:4566

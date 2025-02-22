@@ -31,7 +31,7 @@ build_infrastructure() {
 
 # Build all controllers in the project.
 build_controllers() {
-  for controller_directory in $server_root_directory/src/controllers/*/; do
+  for controller_directory in $server_root_directory/source/controllers/*/; do
     build_directory $controller_directory
   done
 }

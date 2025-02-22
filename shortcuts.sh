@@ -6,27 +6,21 @@
 #       This bash file processes some basic actions for the Shuffle Showdown
 #       setup project. It currently supports the following commands:
 #
-#           update        Updates the local repository to the latest version.
-#           release       Release local changes to the development branch and
-#                         pushes them to the live version.
-#           development   Spins up a local development environment.
-#           production    Spins up the current production version.
-#           commit        Will commit and push the local changes on the current
-#                         branch to the remote repository.
-#                         (Takes an extra argument as the commit message.)
+#           run     - Spins up a local development environment.
+#           mock    - Generates mocks for all applications.
+#           test    - Runs the full test suite for all applications.
+#           build   - Builds all applications.
+#           deploy  - Deploys all applications to the cloud.
+#           release - Releases the current version of the development branch.
 #
 #   Usage example
 #
 #       You can use this file by executing this file and adding the commands
 #       above seperated by spaces. These commands will be executed in order.
-#       For example, to update the local repository and then run a local
-#       development environment, you can run the following:
+#       For example, to spin up a local development environment, you can
+#       simply run the following:
 #
-#           shuffle update dev
-#
-#       Some command require an extra argument. You can call these like this:
-#
-#           shuffle commit "Commit message"
+#           shuffle run
 #
 #   Requirements
 #
@@ -73,6 +67,19 @@ mock () {
 
 ################################################################################
 #
+#   build_client
+#       Function to locally build the client application to make it ready to
+#       deploy.
+#
+################################################################################
+build_client () {
+  cd $CLIENT_COMMANDS_DIRECTORY;
+
+  ./build.sh;
+}
+
+################################################################################
+#
 #   build_server
 #       Function to locally build the server application to make it ready to
 #       deploy.
@@ -92,7 +99,7 @@ build_server () {
 #
 ################################################################################
 build () {
-  build_server;
+  build_server & build_client & wait;
 }
 
 ################################################################################
