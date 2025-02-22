@@ -31,7 +31,7 @@ mock_directory() {
 
 # Test infrastructure.
 mock_infrastructure() {
-  mock_directory $server_root_directory/src/infrastructure
+  mock_directory $server_root_directory/infrastructure
 }
 
 # Test all controllers in the project.

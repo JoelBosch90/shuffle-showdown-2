@@ -42,7 +42,7 @@ test_directory() {
 
 # Test infrastructure.
 test_infrastructure() {
-  test_directory $server_root_directory/src/infrastructure
+  test_directory $server_root_directory/infrastructure
 }
 
 # Test all controllers in the project.

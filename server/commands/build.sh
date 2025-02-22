@@ -26,7 +26,7 @@ build_directory() {
 
 # Build infrastructure.
 build_infrastructure() {
-  build_directory $server_root_directory/src/infrastructure/
+  build_directory $server_root_directory/infrastructure/
 }
 
 # Build all controllers in the project.

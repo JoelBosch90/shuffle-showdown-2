@@ -12,4 +12,5 @@ client_root_directory="${current_directory%/*}"
 infrastructure_directory="$client_root_directory/src/infrastructure"
 
 cd $infrastructure_directory
-# TDB: Add build command here
+npm install
+npm run build

@@ -97,6 +97,18 @@ build () {
 
 ################################################################################
 #
+#   testClient
+#       Function to locally run the full test suite for the client application.
+#
+################################################################################
+test_client () {
+  cd $CLIENT_COMMANDS_DIRECTORY;
+
+  ./test.sh;
+}
+
+################################################################################
+#
 #   testServer
 #       Function to locally run the full test suite for the server application.
 #
@@ -114,7 +126,7 @@ test_server () {
 #
 ################################################################################
 test () {
-  test_server;
+  test_server & test_client & wait;
 }
 
 ################################################################################
