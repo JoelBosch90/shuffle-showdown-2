@@ -17,4 +17,4 @@ client_root_directory=${current_directory%/*}
 infrastructure_directory="$client_root_directory/infrastructure"
 
 cd $infrastructure_directory
-npm run test -- --coverage --watchAll=false
+npm run test
