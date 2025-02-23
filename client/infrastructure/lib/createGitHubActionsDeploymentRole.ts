@@ -13,7 +13,7 @@ export const createGitHubActionsDeploymentRole = (stack: Stack, websiteBucketNam
     oidcProvider.openIdConnectProviderArn,
     {
       StringLike: {
-        'token.actions.githubusercontent.com:sub': 'repo:JoelBosch90/shuffle-showdown-2',
+        'token.actions.githubusercontent.com:sub': 'repo:JoelBosch90/shuffle-showdown-2:*',
         'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
       },
     }
