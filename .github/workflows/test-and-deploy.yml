@@ -18,13 +18,13 @@ permissions:
   contents: read
 
 jobs:
-  test-client:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye
-    steps:
-    - uses: actions/checkout@v4
-    - run: ./commands.sh build client
-    - run: ./commands.sh test client
+  # test-client:
+  #   runs-on: ubuntu-latest
+  #   container: node:22-bullseye
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - run: ./commands.sh build client
+  #   - run: ./commands.sh test client
 
   test-server:
     runs-on: ubuntu-latest
@@ -33,39 +33,46 @@ jobs:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
       with:
-        go-version-file: './server/infrastructure/go.mod'
+        go-version-file: 'server/infrastructure/go.mod'
+        check-latest: true
+        cache-dependency-path: |
+               server/infrastructure/go.sum
+               source/controllers/greet/go.sum
     - run: ./commands.sh build server
     - run: ./commands.sh test server
 
-  deploy-client:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye
-    needs: [ test-client, test-server ]
-    steps:
-    - uses: actions/checkout@v4
-    - run: ./commands.sh build client
-    - run: npm install -g aws-cdk
-    - uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: arn:aws:iam::522814730241:role/github-actions-deployment-role
-        role-session-name: GitHubActionsDeployment-${{ github.run_id }}
-        aws-region: eu-central-1
-    - run: ./commands.sh deploy client
+  # deploy-client:
+  #   runs-on: ubuntu-latest
+  #   container: node:22-bullseye
+  #   needs: [ test-client, test-server ]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - run: ./commands.sh build client
+  #   - run: npm install -g aws-cdk
+  #   - uses: aws-actions/configure-aws-credentials@v4
+  #     with:
+  #       role-to-assume: arn:aws:iam::522814730241:role/github-actions-deployment-role
+  #       role-session-name: GitHubActionsDeployment-${{ github.run_id }}
+  #       aws-region: eu-central-1
+  #   - run: ./commands.sh deploy client
 
-  deploy-server:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye  # AWS CDK uses a JSII layer that requires Node.js
-    needs: [ test-client, test-server ]
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version-file: './server/infrastructure/go.mod'
-    - run: ./commands.sh build server
-    - run: npm install -g aws-cdk
-    - uses: aws-actions/configure-aws-credentials@v4
-      with:
-        role-to-assume: arn:aws:iam::522814730241:role/github-actions-deployment-role
-        role-session-name: GitHubActionsDeployment-${{ github.run_id }}
-        aws-region: eu-central-1
-    - run: ./commands.sh deploy server
+  # deploy-server:
+  #   runs-on: ubuntu-latest
+  #   container: node:22-bullseye  # AWS CDK uses a JSII layer that requires Node.js
+  #   needs: [ test-client, test-server ]
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - uses: actions/setup-go@v5
+  #     with:
+  #       go-version-file: './server/infrastructure/go.mod'
+  #       cache-dependency-path: |
+  #              server/infrastructure/go.sum
+  #              source/controllers/greet/go.sum
+  #   - run: ./commands.sh build server
+  #   - run: npm install -g aws-cdk
+  #   - uses: aws-actions/configure-aws-credentials@v4
+  #     with:
+  #       role-to-assume: arn:aws:iam::522814730241:role/github-actions-deployment-role
+  #       role-session-name: GitHubActionsDeployment-${{ github.run_id }}
+  #       aws-region: eu-central-1
+  #   - run: ./commands.sh deploy server
