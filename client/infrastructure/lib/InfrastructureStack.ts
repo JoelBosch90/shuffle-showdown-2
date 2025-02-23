@@ -8,7 +8,7 @@ export class InfrastructureStack extends Stack {
     super(scope, id, props)
 
     const websiteBucketName = `clientstack-website-${Aws.ACCOUNT_ID}-${Aws.REGION}`
-    const bucket = createWebsiteBucket(this, websiteBucketName)
-    const gitHubActionsDeploymentRole = createGitHubActionsDeploymentRole(this, websiteBucketName)
+    createWebsiteBucket(this, websiteBucketName)
+    createGitHubActionsDeploymentRole(this, websiteBucketName)
   }
 }
