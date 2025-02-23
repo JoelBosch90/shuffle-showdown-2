@@ -34,17 +34,17 @@ describe('createGitHubActionsDeploymentRole', () => {
     });
   });
 
-  // it('works with default thumbprints if none are provided', () => {
-  //   const app = new App();
-  //   const stack = new Stack(app, 'TestStack', { env: { account: dummyAccount, region: dummyRegion } });
+  it('works with default thumbprints if none are provided', () => {
+    const app = new App();
+    const stack = new Stack(app, 'TestStack', { env: { account: dummyAccount, region: dummyRegion } });
 
-  //   createGitHubActionsDeploymentRole(stack);
+    createGitHubActionsDeploymentRole(stack);
 
-  //   const template = Template.fromStack(stack);
-  //   template.hasResourceProperties('Custom::AWSCDKOpenIdConnectProvider', {
-  //     ThumbprintList: Match.arrayWith(defaultThumbprints),
-  //   });
-  // });
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('Custom::AWSCDKOpenIdConnectProvider', {
+      ThumbprintList: Match.arrayWith(defaultThumbprints),
+    });
+  });
 
   it('includes inline policy with sts:AssumeRole permission', () => {
     const app = new App();

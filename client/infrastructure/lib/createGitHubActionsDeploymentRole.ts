@@ -4,10 +4,7 @@ import { Stack } from "aws-cdk-lib/core/lib/stack";
 export const createGitHubActionsDeploymentRole = async (stack: Stack, thumbprint: string = ''): Promise<Role> => {
   const oidcProvider = new OpenIdConnectProvider(stack, 'GitHubOIDCProvider', {
     url: 'https://token.actions.githubusercontent.com',
-    thumbprints: [
-      // '74f3a68f16524f15424927704c9506f55a9316bd',
-      thumbprint,
-    ],
+    thumbprints: ['74f3a68f16524f15424927704c9506f55a9316bd', thumbprint],
     clientIds: ['sts.amazonaws.com'],
   });
 
