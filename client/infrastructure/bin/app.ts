@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib'
-import { InfrastructureStack } from '../lib/InfrastructureStack'
-import { getGitHubThumbprint } from '../lib/getGitHubThumbprint'
+import * as cdk from 'aws-cdk-lib';
+import { InfrastructureStack } from '../lib/InfrastructureStack';
 
-const thumbprint = await getGitHubThumbprint()
-const app = new cdk.App()
-new InfrastructureStack(app, 'ClientStack', thumbprint)
+const app = new cdk.App();
+const stack = new InfrastructureStack(app, 'ClientStack');
+await stack.build();
