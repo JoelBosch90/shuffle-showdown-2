@@ -10,6 +10,9 @@
 #
 ################################################################################
 
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
 TEST_COVERAGE_THRESHOLD=100
 
 current_directory=$(pwd)

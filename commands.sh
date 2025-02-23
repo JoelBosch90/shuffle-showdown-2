@@ -39,6 +39,9 @@
 #
 ################################################################################
 
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
 # Get access to the project's working directory.
 WORKING_DIRECTORY="$(dirname "$(readlink -f "$0")")"
 SERVER_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/server/commands"

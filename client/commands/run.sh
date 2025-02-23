@@ -8,6 +8,9 @@
 #
 ################################################################################
 
+# Exit immediately if a command exits with a non-zero status.
+set -e
+
 current_directory=$(pwd)
 client_root_directory="${current_directory%/*}"
 infrastructure_directory="$client_root_directory/infrastructure"
