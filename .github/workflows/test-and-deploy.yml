@@ -14,7 +14,6 @@ jobs:
   test-client:
     runs-on: ubuntu-latest
     container: node:22-bullseye
-
     steps:
     - uses: actions/checkout@v4
     - run: ./commands.sh build client
@@ -24,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     # Note that AWS CDK uses a JSII layer that requires Node.js
     container: node:22-bullseye
-
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
@@ -33,15 +31,23 @@ jobs:
     - run: ./commands.sh build server
     - run: ./commands.sh test server
 
-  deploy:
+  deploy-client:
     runs-on: ubuntu-latest
     container: node:22-bullseye
     needs: [ test-client, test-server ]
+    steps:
+    - uses: actions/checkout@v4
+    - run: ./commands.sh build client
+    - run: ./commands.sh deploy client
 
+  deploy-server:
+    runs-on: ubuntu-latest
+    container: node:22-bullseye
+    needs: [ test-client, test-server ]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5
       with:
         go-version-file: './server/infrastructure/go.mod'
-    - run: ./commands.sh build
-    - run: ./commands.sh deploy
+    - run: ./commands.sh build server 
+    - run: ./commands.sh deploy server
