@@ -25,6 +25,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: git config --global --add safe.directory .
     - run: ./commands.sh build server
     - run: ./commands.sh test server

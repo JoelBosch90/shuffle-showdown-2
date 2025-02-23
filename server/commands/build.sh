@@ -20,7 +20,7 @@ build_directory() {
     cd $1
 
     go mod tidy
-    GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o bootstrap
+    GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -buildvcs=false -o bootstrap
     echo Built $1
     
     cd - > /dev/null
