@@ -24,10 +24,10 @@ This follow-up version aims to add the following features to Shuffle Showdown:
  - Install LocalStack (https://docs.localstack.cloud/getting-started/installation/)
 
 ## Useful commands
-
- * `aws sso login`        authenticate with AWS
- * `./commands/build.sh`  pre-build the executables for all handlers
- * `cdk deploy`           deploy this stack to your default AWS account/region
- * `cdk diff`             compare deployed stack with current state
- * `cdk synth`            emits the synthesized CloudFormation template
- * `go test`              run unit tests
+ - `shuffle run`        Spins up a local development environment.
+ - `shuffle mock`       Generates mocks for all applications.
+ - `shuffle test`       Runs the full test suite for all applications.
+ - `shuffle build`      Builds all applications.
+ - `shuffle deploy`     Deploys all applications to the cloud.
+ - `shuffle auth`       Authenticates the user to the cloud.
+ - `shuffle release`    Releases the current version of the development branch.
