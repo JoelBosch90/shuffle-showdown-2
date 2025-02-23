@@ -48,8 +48,6 @@ jobs:
         role-to-assume: arn:aws:iam::522814730241:role/github-actions-deployment-role
         role-session-name: GitHubActionsDeployment-${{ github.run_id }}
         aws-region: eu-central-1
-    # - run: apt-get update && apt-get install -y awscli
-    # - run: aws s3 ls
     - run: npm install -g aws-cdk
     - run: ./commands.sh build client
     - run: ./commands.sh deploy client
