@@ -16,5 +16,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: shuffle build client
-    - run: shuffle test client
+    - run: ./shortcuts build client
+    - run: ./shortcuts test client
