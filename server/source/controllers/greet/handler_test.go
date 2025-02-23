@@ -21,7 +21,7 @@ func TestHandler(t *testing.T) {
 			request: events.APIGatewayProxyRequest{},
 			response: events.APIGatewayProxyResponse{
 				StatusCode: 200,
-				Body:       "Hello, wordly world!",
+				Body:       "Hello, lovely world!",
 			},
 			error: nil,
 		},
@@ -32,7 +32,7 @@ func TestHandler(t *testing.T) {
 			},
 			response: events.APIGatewayProxyResponse{
 				StatusCode: 200,
-				Body:       "Hello, wordly world!",
+				Body:       "Hello, lovely world!",
 			},
 			error: nil,
 		},
