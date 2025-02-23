@@ -24,14 +24,14 @@ export const createGitHubActionsDeploymentRole = (stack: Stack, websiteBucketNam
     actions: ['sts:AssumeRole'],
     resources: [`arn:aws:iam::${stack.account}:role/cdk-*`],
   })
-  // const ssmPolicyStatement = new PolicyStatement({
-  //   effect: Effect.ALLOW,
-  //   actions: ['ssm:GetParameter'],
-  //   resources: [`arn:aws:ssm:${stack.region}:${stack.account}:parameter/cdk-*`],
-  // })
+  const ssmPolicyStatement = new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['ssm:GetParameter'],
+    resources: [`arn:aws:ssm:${stack.region}:${stack.account}:parameter/cdk-*`],
+  })
 
   const policyDocument = new PolicyDocument({
-    statements: [assumeRolePolicyStatement],
+    statements: [assumeRolePolicyStatement, ssmPolicyStatement],
   })
 
   const deploymentRole = new Role(stack, 'GitHubActionsDeploymentRole', {
