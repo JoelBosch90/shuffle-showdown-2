@@ -1,11 +1,10 @@
 import { OpenIdConnectProvider, PolicyDocument, PolicyStatement, Effect, Role, WebIdentityPrincipal } from "aws-cdk-lib/aws-iam"
 import { Stack } from "aws-cdk-lib/core/lib/stack"
 
-export const createGitHubActionsDeploymentRole = (stack: Stack, websiteBucketName: string): Role => {
+export const createGitHubActionsDeploymentRole = async (stack: Stack, thumbprint: string): Promise<Role> => {
   const oidcProvider = new OpenIdConnectProvider(stack, 'GitHubOIDCProvider', {
     url: 'https://token.actions.githubusercontent.com',
-    // See https://github.com/aws-actions/configure-aws-credentials/issues/357#issuecomment-1011642085 to get thumbprint.
-    thumbprints: ['a1089bd8e2fe39b00b67a891a35c108d0c26b24c'],
+    thumbprints: ['74f3a68f16524f15424927704c9506f55a9316bd', 'a1089bd8e2fe39b00b67a891a35c108d0c26b24c', thumbprint],
     clientIds: ['sts.amazonaws.com'],
   })
 

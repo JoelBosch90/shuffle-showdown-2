@@ -7,6 +7,7 @@ const createGitHubActionsDeploymentRoleSpy = jest.spyOn(require('./createGitHubA
 describe('InfrastructureStack', () => {
   const dummyAccount = '123456789012'
   const dummyRegion = 'us-east-1'
+  const dummyThumbprint = 'abcdefgh1234567890'
   const dummyStackProperties = {
     env: {
       account: dummyAccount,
@@ -18,7 +19,7 @@ describe('InfrastructureStack', () => {
 
   it('creates a website bucket with the proper name', () => {
     const app = new App()
-    new InfrastructureStack(app, 'TestStack', dummyStackProperties)
+    new InfrastructureStack(app, 'TestStack', dummyThumbprint, dummyStackProperties)
 
     expect(createWebsiteBucketSpy).toHaveBeenCalledWith(
       expect.any(Stack),
@@ -28,11 +29,11 @@ describe('InfrastructureStack', () => {
 
   it('creates a GitHub Actions deployment role', () => {
     const app = new App()
-    new InfrastructureStack(app, 'TestStack', dummyStackProperties)
+    new InfrastructureStack(app, 'TestStack', dummyThumbprint, dummyStackProperties)
 
     expect(createGitHubActionsDeploymentRoleSpy).toHaveBeenCalledWith(
       expect.any(Stack),
-      `clientstack-website-${dummyAccount}-${dummyRegion}`,
+      dummyThumbprint,
     )
   })
 })
