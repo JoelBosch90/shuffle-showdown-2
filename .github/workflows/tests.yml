@@ -1,0 +1,31 @@
+# This workflow triggers when code is added to the staging branch.
+# It runs tests for the client and server components on clean ubuntu images.
+
+on:
+  push:
+    branches: [ "staging" ]
+  pull_request:
+    branches: [ "staging" ]
+
+jobs:
+  # test-client:
+  #   runs-on: ubuntu-latest
+  #   container: node:22-bullseye
+
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - run: ./commands.sh build client
+  #   - run: ./commands.sh test client
+
+  test-server:
+    runs-on: ubuntu-latest
+    container: golang:1.24-bullseye
+
+    steps:
+    - uses: actions/checkout@v4
+    # Note that AWS CDK uses a JSII layer that requires Node.
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
+    - run: ./commands.sh build server
+    - run: ./commands.sh test server
