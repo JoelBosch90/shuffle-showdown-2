@@ -24,7 +24,7 @@ test_directory() {
   echo Testing in $1
   
   # Run the tests for this controller.
-  go test -coverprofile=coverage.out -tags $SKIP_FILE_TAG > /dev/null
+  go test -coverprofile=coverage.out -tags $SKIP_FILE_TAG # > /dev/null
 
   # Display the test results.
   go tool cover -func=coverage.out
