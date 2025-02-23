@@ -5,7 +5,7 @@ export const createGitHubActionsDeploymentRole = (stack: Stack, websiteBucketNam
   const oidcProvider = new OpenIdConnectProvider(stack, 'GitHubOIDCProvider', {
     url: 'https://token.actions.githubusercontent.com',
     // See https://github.com/aws-actions/configure-aws-credentials/issues/357#issuecomment-1011642085 to get thumbprint.
-    thumbprints: ['74f3a68f16524f15424927704c9506f55a9316bd'],
+    thumbprints: ['a1089bd8e2fe39b00b67a891a35c108d0c26b24c'],
     clientIds: ['sts.amazonaws.com'],
   })
 
