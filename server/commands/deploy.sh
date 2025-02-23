@@ -17,4 +17,4 @@ infrastructure_directory="$server_root_directory/infrastructure"
 
 cd $infrastructure_directory
 cdk synth
-cdk deploy --require-approval never
+GOFLAGS=-buildvcs=false cdk deploy --require-approval never

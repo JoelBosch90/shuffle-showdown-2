@@ -8,5 +8,5 @@ describe('InfrastructureStack', () => {
     const stack = new InfrastructureStack(app, stackName)
 
     expect(stack).toBeDefined()
-  });
-});
+  })
+})

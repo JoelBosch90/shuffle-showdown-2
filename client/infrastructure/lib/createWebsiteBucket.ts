@@ -1,4 +1,4 @@
-import { Stack, CfnOutput, RemovalPolicy, Aws } from 'aws-cdk-lib'
+import { Stack, CfnOutput, RemovalPolicy } from 'aws-cdk-lib'
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3'
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment'
 
