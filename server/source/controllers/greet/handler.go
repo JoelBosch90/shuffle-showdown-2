@@ -9,6 +9,6 @@ type Handler func(events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse
 func handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	return events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       "Hello, amazing world!",
+		Body:       "Hello, wordy world!",
 	}, nil
 }
