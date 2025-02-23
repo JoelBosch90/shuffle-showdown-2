@@ -17,5 +17,5 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: ls -la
-    - run: ./shortcuts build client
-    - run: ./shortcuts test client
+    - run: ./commands.sh build client
+    - run: ./commands.sh test client
