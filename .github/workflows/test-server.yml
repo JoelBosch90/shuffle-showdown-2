@@ -1,5 +1,7 @@
 # This workflow triggers when code is added to the staging branch.
-# It runs tests for the client and server components on clean ubuntu images.
+# It runs tests for the server components on a clean ubuntu image.
+
+name: Test Server
 
 on:
   push:
@@ -8,16 +10,7 @@ on:
     branches: [ "staging" ]
 
 jobs:
-  test-client:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye
-
-    steps:
-    - uses: actions/checkout@v4
-    - run: ./commands.sh build client
-    - run: ./commands.sh test client
-
-  test-server:
+  build:
     runs-on: ubuntu-latest
     container: golang:1.24-bullseye
 
@@ -28,4 +21,10 @@ jobs:
       with:
         node-version: '22.x'
     - run: ./commands.sh build server
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
     - run: ./commands.sh test server

@@ -1,0 +1,26 @@
+# This workflow triggers when code is added to the staging branch.
+# It runs tests for the client components on a clean ubuntu image.
+
+name: Test Client
+
+on:
+  push:
+    branches: [ "staging" ]
+  pull_request:
+    branches: [ "staging" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: node:22-bullseye
+
+    steps:
+    - uses: actions/checkout@v4
+    - run: ./commands.sh build client
+
+  test-client:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+    - run: ./commands.sh test client
