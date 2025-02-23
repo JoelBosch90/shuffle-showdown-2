@@ -1,4 +1,4 @@
-# This workflow triggers when code is added to the staging branch.
+# This workflow triggers when code is added to the production branch.
 # It runs tests for all components on a clean ubuntu image.
 # If tests pass, the code is deployed to the production environment.
 
@@ -6,9 +6,9 @@ name: Test and Deploy
 
 on:
   push:
-    branches: [ "staging" ]
+    branches: [ "production" ]
   pull_request:
-    branches: [ "staging" ]
+    branches: [ "production" ]
 
 env:
   AWS_REGION : "eu-west-1"

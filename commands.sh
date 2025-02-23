@@ -327,9 +327,9 @@ deploy () {
 #
 ################################################################################
 release () {
-  git switch staging
+  git switch production
   git merge development
-  git push origin staging
+  git push origin production
   git switch -
 }
 
