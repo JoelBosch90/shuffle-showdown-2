@@ -10,7 +10,7 @@ on:
     branches: [ "staging" ]
 
 jobs:
-  build:
+  test-client:
     runs-on: ubuntu-latest
     container: golang:1.24-bullseye
 
@@ -21,15 +21,4 @@ jobs:
       with:
         node-version: '22.x'
     - run: ./commands.sh build server
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-    - uses: actions/checkout@v4
-    # Note that AWS CDK uses a JSII layer that requires Node.
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '22.x'
     - run: ./commands.sh test server
