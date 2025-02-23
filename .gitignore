@@ -2,3 +2,6 @@
 
 # Ignore the localstack files and directories
 localstack_*
+
+# Ignore any certificates
+*.crt
