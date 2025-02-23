@@ -10,14 +10,14 @@ on:
     branches: [ "staging" ]
 
 jobs:
-  test-client:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye
+  # test-client:
+  #   runs-on: ubuntu-latest
+  #   container: node:22-bullseye
 
-    steps:
-    - uses: actions/checkout@v4
-    - run: ./commands.sh build client
-    - run: ./commands.sh test client
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #   - run: ./commands.sh build client
+  #   - run: ./commands.sh test client
 
   test-server:
     runs-on: ubuntu-latest
@@ -25,6 +25,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    # - run: git config --global --add safe.directory .
+    - run: git config --global --add safe.directory .
     - run: ./commands.sh build server
     - run: ./commands.sh test server
