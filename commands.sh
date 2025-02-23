@@ -391,5 +391,11 @@ while [[ $# -gt 0 ]]; do
       shift # Get ready to process the next command.
       shift # Skip once extra because we used an extra argument for this.
       ;;
+
+    # If the command is not recognized, then print an error message.
+    *)
+      echo "Command not recognized: $command"
+      exit 1
+      ;;
   esac
 done
