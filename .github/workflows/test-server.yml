@@ -27,4 +27,9 @@ jobs:
     needs: build
 
     steps:
+    - uses: actions/checkout@v4
+    # Note that AWS CDK uses a JSII layer that requires Node.
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22.x'
     - run: ./commands.sh test server
