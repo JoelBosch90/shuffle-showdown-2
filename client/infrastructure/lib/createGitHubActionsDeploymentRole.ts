@@ -21,8 +21,9 @@ export const createGitHubActionsDeploymentRole = (stack: Stack, websiteBucketNam
 
   const s3PolicyStatement = new PolicyStatement({
     effect: Effect.ALLOW,
-    actions: ['s3:ListObjects'],
-    resources: [`arn:aws:s3:::${websiteBucketName}`, `arn:aws:s3:::${websiteBucketName}/*`],
+    actions: ['sts:AssumeRole'],
+    resources: ['arn:aws:iam:::role/cdk-*'],
+    // resources: [`arn:aws:s3:::${websiteBucketName}`, `arn:aws:s3:::${websiteBucketName}/*`],
   })
 
   const policyDocument = new PolicyDocument({
