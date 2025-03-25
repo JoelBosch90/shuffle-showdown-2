@@ -26,6 +26,7 @@ export AWS_REGION=eu-central-1
 
 # Prepare and deploy the CDK stack to LocalStack
 cdklocal bootstrap
+cdklocal doctor
 cdklocal synth
 cdklocal deploy --require-approval never
 

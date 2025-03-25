@@ -37,5 +37,11 @@ You can preview the production build with `npm run preview`.
 
 > To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
 
+## Install Playwright
 
-To install playwright, use `npx playwright install-deps; npx playwright install`
+To install playwright, use: 
+
+```bash
+npx playwright install-deps
+npx playwright install
+```
