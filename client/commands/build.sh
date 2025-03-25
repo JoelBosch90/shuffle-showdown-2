@@ -18,6 +18,8 @@ infrastructure_directory="$client_root_directory/infrastructure"
 # Build the app.
 cd $app_directory
 npm ci > /dev/null
+npx playwright install-deps
+npx playwright install
 npm run build > /dev/null
 echo "Built $app_directory"
 
