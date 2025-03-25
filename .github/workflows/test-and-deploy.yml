@@ -23,6 +23,7 @@ jobs:
     container: node:22-bullseye
     steps:
     - uses: actions/checkout@v4
+    - run: cd client/app && npm install && npx playwright install-deps && npx playwright install
     - run: ./commands.sh build client
     - run: ./commands.sh test client
 
