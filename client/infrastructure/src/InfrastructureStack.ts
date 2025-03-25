@@ -10,12 +10,8 @@ export class InfrastructureStack extends Stack {
   }
 
   public async build() {
-    this.buildBucket();
-    await this.buildGitHubActionsDeploymentRole();
-  }
-
-  private buildBucket() {
     createWebsiteBucket(this, `clientstack-website-${Aws.ACCOUNT_ID}-${Aws.REGION}`);
+    await this.buildGitHubActionsDeploymentRole();
   }
 
   private async buildGitHubActionsDeploymentRole() {

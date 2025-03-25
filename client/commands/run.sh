@@ -13,6 +13,7 @@ set -e
 
 current_directory=$(pwd)
 client_root_directory="${current_directory%/*}"
+app_directory="$client_root_directory/app"
 infrastructure_directory="$client_root_directory/infrastructure"
 
 echo "Deploying the Client CDK stack to LocalStack"
@@ -28,6 +29,5 @@ cdklocal bootstrap
 cdklocal synth
 cdklocal deploy --require-approval never
 
-# Sync local assets to the LocalStack S3 bucket
-aws s3 sync $client_root_directory/source/assets s3://website --endpoint-url http://localhost:4566
-aws s3 website s3://website --index-document index.html --error-document error.html --endpoint-url http://localhost:4566
+# Sync local assets to the LocalStack S3 bucket. This is necessary because CDK won't upload correctly to LocalStack.
+aws s3 sync $app_directory/build s3://clientstack-website-000000000000-eu-central-1 --endpoint-url http://localhost:4566

@@ -12,7 +12,14 @@ set -e
 
 current_directory=$(pwd)
 client_root_directory="${current_directory%/*}"
+app_directory="$client_root_directory/app"
 infrastructure_directory="$client_root_directory/infrastructure"
+
+# Build the app.
+cd $app_directory
+npm ci > /dev/null
+npm run build > /dev/null
+echo "Built $app_directory"
 
 # Build the infrastructure.
 cd $infrastructure_directory

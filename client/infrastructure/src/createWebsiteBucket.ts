@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Stack, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
@@ -6,7 +7,6 @@ export const createWebsiteBucket = (stack: Stack, bucketName: string): Bucket =>
   const bucket = new Bucket(stack, 'Website', {
     bucketName,
     websiteIndexDocument: 'index.html',
-    websiteErrorDocument: 'error.html',
     publicReadAccess: true,
     blockPublicAccess: BlockPublicAccess.BLOCK_ACLS,
     removalPolicy: RemovalPolicy.DESTROY,
@@ -14,7 +14,7 @@ export const createWebsiteBucket = (stack: Stack, bucketName: string): Bucket =>
   });
 
   new BucketDeployment(stack, 'DeployWebsite', {
-    sources: [Source.asset('../source/assets')],
+    sources: [Source.asset('./assets')],
     destinationBucket: bucket,
   });
 
