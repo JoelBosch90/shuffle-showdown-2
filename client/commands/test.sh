@@ -17,7 +17,11 @@ TEST_COVERAGE_THRESHOLD=100
 
 current_directory=$(pwd)
 client_root_directory=${current_directory%/*}
+app_directory="$client_root_directory/app"
 infrastructure_directory="$client_root_directory/infrastructure"
+
+cd $app_directory
+npm run test
 
 cd $infrastructure_directory
 npm run test

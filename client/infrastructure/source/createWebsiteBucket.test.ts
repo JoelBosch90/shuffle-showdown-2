@@ -16,7 +16,6 @@ describe('createWebsiteBucket', () => {
       BucketName: bucketName,
       WebsiteConfiguration: {
         IndexDocument: 'index.html',
-        ErrorDocument: 'error.html',
       },
     });
   });
