@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { Stack, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
@@ -14,7 +13,7 @@ export const createWebsiteBucket = (stack: Stack, bucketName: string): Bucket =>
   });
 
   new BucketDeployment(stack, 'DeployWebsite', {
-    sources: [Source.asset('./assets')],
+    sources: [Source.asset('../app/build')],
     destinationBucket: bucket,
   });
 
