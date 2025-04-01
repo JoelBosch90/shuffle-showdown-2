@@ -12,6 +12,8 @@ on:
 
 env:
   AWS_REGION : "eu-west-1"
+  SHUFFLE_SHOWDOWN_DOMAIN: ${{ vars.SHUFFLE_SHOWDOWN_DOMAIN }}
+  SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN: ${{ secrets.SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN }}
   
 permissions:
   id-token: write
