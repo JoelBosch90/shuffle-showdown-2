@@ -10,7 +10,12 @@ export class InfrastructureStack extends Stack {
   }
 
   public async build() {
-    createWebsiteBucket(this, `clientstack-website-${Aws.ACCOUNT_ID}-${Aws.REGION}`);
+    const domain = process.env.SHUFFLE_SHOWDOWN_DOMAIN;
+    if (!domain) {
+      throw new Error('Domain is not defined in environment variables.');
+    }
+
+    createWebsiteBucket(this, domain);
     await this.buildGitHubActionsDeploymentRole();
   }
 
