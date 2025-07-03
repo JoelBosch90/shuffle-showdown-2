@@ -1,6 +1,6 @@
-import { Stack, CfnOutput, RemovalPolicy } from 'aws-cdk-lib';
+import { Stack, CfnOutput, RemovalPolicy, Duration } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
-import { AllowedMethods, Distribution, OriginProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
+import { AllowedMethods, Distribution, OriginProtocolPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
@@ -19,6 +19,7 @@ export const createWebsiteBucket = (stack: Stack, name: string): Bucket => {
     }),
     versioned: true,
     websiteIndexDocument: 'index.html',
+    websiteErrorDocument: 'index.html',
   });
 
   new BucketDeployment(stack, 'DeployWebsite', {
@@ -48,7 +49,22 @@ export const createWebsiteBucket = (stack: Stack, name: string): Bucket => {
         }),
         allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
         compress: true,
+        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       },
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: Duration.seconds(0),
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: Duration.seconds(0),
+        },
+      ],
       certificate,
     });
 
