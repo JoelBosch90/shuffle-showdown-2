@@ -5,9 +5,9 @@ import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { BlockPublicAccess, Bucket } from 'aws-cdk-lib/aws-s3';
 import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 
-export const createWebsiteBucket = (stack: Stack, bucketName: string): Bucket => {
+export const createWebsiteBucket = (stack: Stack, name: string): Bucket => {
   const bucket = new Bucket(stack, 'Website', {
-    bucketName,
+    bucketName: name.replace(/\:/g, '-'),
     removalPolicy: RemovalPolicy.DESTROY,
     autoDeleteObjects: true,
     publicReadAccess: true,
@@ -26,27 +26,36 @@ export const createWebsiteBucket = (stack: Stack, bucketName: string): Bucket =>
     destinationBucket: bucket,
   });
 
-  const certificateArn = process.env.SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN;
-  if (!certificateArn) {
-    throw new Error('Certificate ARN is not defined in environment variables.');
+  let websiteUrl = bucket.bucketWebsiteUrl;
+
+  const isLocalEnvironment = process.env.AWS_ENDPOINT_URL?.includes('localhost') || process.env.AWS_ENDPOINT_URL?.includes('localstack')
+
+  // If not in a local environment, set up CloudFront distribution
+  if (!isLocalEnvironment) {
+    const certificateArn = process.env.SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN;
+    if (!certificateArn) {
+      throw new Error('Certificate ARN is not defined in environment variables.');
+    }
+    const certificate = Certificate.fromCertificateArn(stack, 'WebsiteCertificate', certificateArn);
+
+    const distribution = new Distribution(stack, 'WebsiteDistribution', {
+      domainNames: [name],
+      defaultBehavior: {
+        origin: new HttpOrigin(bucket.bucketWebsiteDomainName, {
+          protocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
+          httpPort: 80,
+          httpsPort: 443,
+        }),
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
+        compress: true,
+      },
+      certificate,
+    });
+
+    websiteUrl = distribution.domainName;
   }
-  const certificate = Certificate.fromCertificateArn(stack, 'WebsiteCertificate', certificateArn);
 
-  const distribution = new Distribution(stack, 'WebsiteDistribution', {
-    domainNames: [bucketName],
-    defaultBehavior: {
-      origin: new HttpOrigin(bucket.bucketWebsiteDomainName, {
-        protocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
-        httpPort: 80,
-        httpsPort: 443,
-      }),
-      allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
-      compress: true,
-    },
-    certificate,
-  });
-
-  new CfnOutput(stack, 'WebsiteUrl', { value: distribution.domainName });
+  new CfnOutput(stack, 'WebsiteUrl', { value: websiteUrl });
 
   return bucket;
 };
