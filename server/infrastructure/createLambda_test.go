@@ -75,6 +75,7 @@ func TestCreateLambda(t *testing.T) {
 		t.Parallel()
 		mockUrl := "https://example.com"
 		os.Setenv("SHUFFLE_SHOWDOWN_API_PATH", "api")
+		os.Setenv("API_GATEWAY_URL_NAME", "ApiGatewayUrl")
 
 		// GIVEN
 		mockStack := mocks.NewMockStack(controller)

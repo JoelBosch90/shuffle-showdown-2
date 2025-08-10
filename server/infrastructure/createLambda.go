@@ -35,9 +35,11 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	helloResource := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
 	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
-	newCfnOutput(stack, jsii.String("ApiGateway"), &awscdk.CfnOutputProps{
+	apiGateWayUrlName := os.Getenv("API_GATEWAY_URL_NAME")
+	newCfnOutput(stack, jsii.String(apiGateWayUrlName), &awscdk.CfnOutputProps{
 		Value:       api.Url(),
 		Description: jsii.String("The URL of the API Gateway"),
+		ExportName:  jsii.String(apiGateWayUrlName),
 	})
 
 	return lambda

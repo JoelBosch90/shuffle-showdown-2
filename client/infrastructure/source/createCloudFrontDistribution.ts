@@ -4,8 +4,8 @@ import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { createCertificate } from './createCertificate';
 import { isLocalEnvironment } from './isLocalEnvironment';
-import { getWebsiteDomain } from './getWebsiteDomain';
 import { getApiPath } from './getApiPath';
+import { getApiGatewayOrigin } from './getApiGatewayOrigin';
 
 /**
  *  This function creates a CloudFront distribution for the website bucket.
@@ -35,7 +35,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
     },
     additionalBehaviors: isLocalEnvironment() ? {} : {
       [apiPath]: {
-        origin: getWebsiteDomain(),
+        origin: getApiGatewayOrigin(),
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,

@@ -27,7 +27,7 @@ export class InfrastructureStack extends Stack {
    *  @throws   {Error} - If the SHUFFLE_SHOWDOWN_DOMAIN environment variable is not defined.
    *  @returns  {Promise<void>} - A promise that resolves when the stack is built.
    */
-  public async build() {
+  public async build(): Promise<void> {
     const domain = process.env.SHUFFLE_SHOWDOWN_DOMAIN;
     if (!domain) {
       throw new Error('Domain is not defined in environment variables.');
@@ -42,7 +42,7 @@ export class InfrastructureStack extends Stack {
    *  This method retrieves the GitHub thumbprint and creates the deployment role.
    *  @returns  {Promise<void>} - A promise that resolves when the stack is built.
    */
-  private async buildGitHubActionsDeploymentRole() {
+  private async buildGitHubActionsDeploymentRole(): Promise<void> {
     const thumbprint = await getGitHubThumbprint();
     createGitHubActionsDeploymentRole(this, thumbprint);
   }
