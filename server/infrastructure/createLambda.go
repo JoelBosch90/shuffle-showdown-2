@@ -24,11 +24,8 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
 			AllowOrigins: jsii.Strings("https://" + os.Getenv("SHUFFLE_SHOWDOWN_DOMAIN")),
 			AllowMethods: jsii.Strings("GET", "POST", "PUT", "DELETE", "OPTIONS"),
-			AllowHeaders: jsii.Strings("Content-Type", "Authorization"),
+			AllowHeaders: jsii.Strings("Content-Type", "Authorization", "Origin"),
 			MaxAge:       awscdk.Duration_Seconds(jsii.Number(300)),
-		},
-		EndpointConfiguration: &awsapigateway.EndpointConfiguration{
-			Types: &[]awsapigateway.EndpointType{awsapigateway.EndpointType_EDGE},
 		},
 	})
 

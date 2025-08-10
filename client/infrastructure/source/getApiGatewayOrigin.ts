@@ -21,5 +21,6 @@ export function getApiGatewayOrigin(): HttpOrigin {
 
   return new HttpOrigin(withoutPath, {
     protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+    originPath: '/prod',
   });
 }
