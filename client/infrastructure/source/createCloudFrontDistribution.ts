@@ -1,7 +1,7 @@
 import { Stack, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { AllowedMethods, CachePolicy, Distribution, OriginProtocolPolicy, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { Bucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
 import { createCertificate } from './createCertificate';
 import { isLocalEnvironment } from './isLocalEnvironment';
 import { getApiPath } from './getApiPath';
@@ -62,6 +62,13 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
     logBucket: new Bucket(stack, 'LogBucket', {
       removalPolicy: RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
+      objectOwnership: ObjectOwnership.OBJECT_WRITER,
+      blockPublicAccess: {
+        blockPublicAcls: false,
+        blockPublicPolicy: true,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: true
+      },
     }),
     logFilePrefix: 'cloudfront-logs/',
   });
