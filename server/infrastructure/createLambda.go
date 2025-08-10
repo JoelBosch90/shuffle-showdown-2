@@ -10,7 +10,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration) awslambda.Function {
+func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newCfnOutput interfaces.NewCfnOutput) awslambda.Function {
 	lambda := newFunction(stack, jsii.String(parameters.Name), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),
@@ -35,7 +35,7 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	helloResource := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
 	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
-	awscdk.NewCfnOutput(stack, jsii.String(os.Getenv("API_GATEWAY_NAME")), &awscdk.CfnOutputProps{
+	newCfnOutput(stack, jsii.String(os.Getenv("API_GATEWAY_NAME")), &awscdk.CfnOutputProps{
 		Value:       api.Url(),
 		Description: jsii.String("The URL of the API Gateway"),
 	})

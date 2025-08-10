@@ -3,8 +3,10 @@ package main
 import (
 	"infrastructure/interfaces"
 	"infrastructure/mocks"
+	"os"
 	"testing"
 
+	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/constructs-go/constructs/v10"
@@ -52,6 +54,18 @@ func (m *MockNewLambdaIntegration) Get() interfaces.NewLambdaIntegration {
 	}
 }
 
+type MockNewCfnOutput struct {
+	mocks.Function
+}
+
+func (m *MockNewCfnOutput) Get() interfaces.NewCfnOutput {
+	return func(scope constructs.Construct, id *string, props *awscdk.CfnOutputProps) awscdk.CfnOutput {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return nil
+	}
+}
+
 func TestCreateLambda(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
@@ -59,20 +73,26 @@ func TestCreateLambda(t *testing.T) {
 	t.Run("interfaces.createLambda", func(t *testing.T) {
 		// SETUP
 		t.Parallel()
+		mockUrl := "https://example.com"
+		os.Setenv("API_GATEWAY_NAME", "BestApiGateway")
 
 		// GIVEN
 		mockStack := mocks.NewMockStack(controller)
-		mockIResource := mocks.NewMockIResource(controller)
+		mockApiProxyIResource := mocks.NewMockIResource(controller)
+		mockLambdaResource := mocks.NewMockResource(controller)
 		mockResource := mocks.NewMockResource(controller)
 		mockApi := mocks.NewMockRestApi(controller)
-		mockApi.EXPECT().Root().Return(mockIResource).Times(1)
-		mockIResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockResource).Times(1)
-		mockResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
+		mockApi.EXPECT().Root().Return(mockApiProxyIResource).Times(1)
+		mockApi.EXPECT().Url().Return(&mockUrl).Times(1)
+		mockApiProxyIResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockResource).Times(1)
+		mockResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockLambdaResource).Times(1)
+		mockLambdaResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 
 		mockNewFunction := MockNewFunction{}
 		mockNewApi := MockNewLambdaRestApi{}
 		mockNewApi.SetApi(mockApi)
 		mockNewIntegration := MockNewLambdaIntegration{}
+		mockNewCfnOutput := MockNewCfnOutput{}
 		mockLambdaParameters := interfaces.LambdaParameters{
 			Name:       "GreetFunction",
 			SourcePath: "../controllers/greet",
@@ -81,7 +101,7 @@ func TestCreateLambda(t *testing.T) {
 		}
 
 		// WHEN
-		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get())
+		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewCfnOutput.Get())
 
 		// THEN
 		newFunctionTimesCalled := mockNewFunction.TimesCalled()
@@ -97,6 +117,11 @@ func TestCreateLambda(t *testing.T) {
 		newIntegrationTimesCalled := mockNewIntegration.TimesCalled()
 		if newIntegrationTimesCalled != 1 {
 			t.Errorf("Expected newIntegration to be called once, but was called %d times", newIntegrationTimesCalled)
+		}
+
+		newCfnOutputTimesCalled := mockNewCfnOutput.TimesCalled()
+		if newCfnOutputTimesCalled != 1 {
+			t.Errorf("Expected newCfnOutput to be called once, but was called %d times", newCfnOutputTimesCalled)
 		}
 	})
 }

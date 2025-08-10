@@ -47,7 +47,7 @@ type mockCreateLambda struct {
 }
 
 func (m *mockCreateLambda) Get() interfaces.CreateLambda {
-	return func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration) awslambda.Function {
+	return func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newCfnOutput interfaces.NewCfnOutput) awslambda.Function {
 		m.SetTimesCalled(m.TimesCalled() + 1)
 
 		return nil

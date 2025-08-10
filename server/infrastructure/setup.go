@@ -45,6 +45,7 @@ func setup(
 			awslambda.NewFunction,
 			newLambdaRestApi,
 			newLambdaIntegration,
+			awscdk.NewCfnOutput,
 		)
 	}
 
