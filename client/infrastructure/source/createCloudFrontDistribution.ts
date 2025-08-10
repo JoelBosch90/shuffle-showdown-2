@@ -8,6 +8,7 @@ import { createApiGatewayOrigin } from './createApiGatewayOrigin';
 
 export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domainName: string): Distribution => {
   const certificate = createCertificate(stack);
+  const viewerProtocolPolicy = ViewerProtocolPolicy.REDIRECT_TO_HTTPS;
 
   const distribution = new Distribution(stack, 'WebsiteDistribution', {
     domainNames: [domainName],
@@ -19,7 +20,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
       }),
       allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
       compress: true,
-      viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      viewerProtocolPolicy,
     },
     additionalBehaviors: isLocalEnvironment() ? {} : {
       '/api/*': {
@@ -27,7 +28,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
-        viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        viewerProtocolPolicy,
       },
     },
     errorResponses: [
