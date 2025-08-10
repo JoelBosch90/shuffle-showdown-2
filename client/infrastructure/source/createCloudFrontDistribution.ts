@@ -38,7 +38,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
         origin: getApiGatewayOrigin(),
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
+        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         viewerProtocolPolicy,
       },
     },

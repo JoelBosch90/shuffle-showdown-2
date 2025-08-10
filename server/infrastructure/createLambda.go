@@ -27,6 +27,9 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 			AllowHeaders: jsii.Strings("Content-Type", "Authorization"),
 			MaxAge:       awscdk.Duration_Seconds(jsii.Number(300)),
 		},
+		EndpointConfiguration: &awsapigateway.EndpointConfiguration{
+			Types: &[]awsapigateway.EndpointType{awsapigateway.EndpointType_EDGE},
+		},
 	})
 
 	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
