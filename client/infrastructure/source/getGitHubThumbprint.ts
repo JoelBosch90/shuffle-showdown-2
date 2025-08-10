@@ -4,6 +4,7 @@ import { createHash } from 'crypto';
 /**
  *  Gets the GitHub certificate thumbprint.
  *  Based on https://github.com/aws-actions/configure-aws-credentials/issues/357#issuecomment-1011642085
+ *  @returns  {Promise<string | undefined>} - The SHA-1 thumbprint of the GitHub Actions certificate, or undefined if it cannot be retrieved.
  */
 export async function getGitHubThumbprint(): Promise<string | undefined> {
   const options: ConnectionOptions = {

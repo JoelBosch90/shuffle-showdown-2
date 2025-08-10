@@ -1,5 +1,6 @@
 const mockCreateCertificate = jest.fn();
-const mockCreateApiGateWayOrigin = jest.fn();
+const mockgetWebsiteDomain = jest.fn();
+const mockGetApiPath = jest.fn();
 
 import { Stack } from 'aws-cdk-lib';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -9,23 +10,25 @@ import { Match, Template } from 'aws-cdk-lib/assertions';
 import { ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 
 jest.mock('./createCertificate', () => ({ createCertificate: mockCreateCertificate }));
-jest.mock('./createApiGatewayOrigin', () => ({ createApiGatewayOrigin: mockCreateApiGateWayOrigin }));
+jest.mock('./getWebsiteDomain', () => ({ getWebsiteDomain: mockgetWebsiteDomain }));
+jest.mock('./getApiPath', () => ({ getApiPath: mockGetApiPath }));
 
 const isLocalEnvironmentSpy = jest.spyOn(require('./isLocalEnvironment'), 'isLocalEnvironment');
 
 describe('createCloudFrontDistribution', () => {
   const distributionName = 'WebsiteDistribution';
   const mockDomainName = 'example.com';
-  const mockApiDomainName = 'example.com/api';
+  const mockApiPath = 'api';
   const mockBucketName = 'mock-bucket';
   const mockCertificate = { certificateArn: 'arn:aws:acm:us-east-1:account-id:certificate/certificate-id' };
-  const mockHttpOrigin = new HttpOrigin(mockApiDomainName);
+  const mockHttpOrigin = new HttpOrigin(`${mockDomainName}/${mockApiPath}`);
 
   beforeEach(() => {
     jest.clearAllMocks();
 
     mockCreateCertificate.mockReturnValue(mockCertificate);
-    mockCreateApiGateWayOrigin.mockReturnValue(mockHttpOrigin);
+    mockgetWebsiteDomain.mockReturnValue(mockHttpOrigin);
+    mockGetApiPath.mockReturnValue(mockApiPath);
     isLocalEnvironmentSpy.mockReturnValue(false);
   });
 
@@ -103,7 +106,7 @@ describe('createCloudFrontDistribution', () => {
 
     createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
 
-    expect(mockCreateApiGateWayOrigin).toHaveBeenCalled();
+    expect(mockgetWebsiteDomain).toHaveBeenCalled();
     Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         DefaultCacheBehavior: {
@@ -119,7 +122,7 @@ describe('createCloudFrontDistribution', () => {
 
     createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
 
-    expect(mockCreateApiGateWayOrigin).toHaveBeenCalled();
+    expect(mockgetWebsiteDomain).toHaveBeenCalled();
     Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         CacheBehaviors: Match.arrayWith([Match.objectLike({
@@ -176,7 +179,7 @@ describe('createCloudFrontDistribution', () => {
 
     createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
 
-    expect(mockCreateApiGateWayOrigin).not.toHaveBeenCalled();
+    expect(mockgetWebsiteDomain).not.toHaveBeenCalled();
     Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         AdditionalBehaviors: Match.absent(),

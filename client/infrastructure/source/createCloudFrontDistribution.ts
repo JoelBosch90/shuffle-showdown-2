@@ -4,11 +4,22 @@ import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { createCertificate } from './createCertificate';
 import { isLocalEnvironment } from './isLocalEnvironment';
-import { createApiGatewayOrigin } from './createApiGatewayOrigin';
+import { getWebsiteDomain } from './getWebsiteDomain';
+import { getApiPath } from './getApiPath';
 
+/**
+ *  This function creates a CloudFront distribution for the website bucket.
+ *  It sets up the distribution with the specified domain name and bucket.
+ *  @param    {Stack} stack - The CDK stack in which to create the distribution.
+ *  @param    {Bucket} bucket - The S3 bucket to be used as the origin for the distribution.
+ *  @param    {string} domainName - The domain name for the CloudFront distribution.
+ *  @returns  {Distribution} - The created CloudFront distribution.
+ */
 export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domainName: string): Distribution => {
   const certificate = createCertificate(stack);
   const viewerProtocolPolicy = ViewerProtocolPolicy.REDIRECT_TO_HTTPS;
+  const apiPath = `/${getApiPath()}/*`;
+  const indexDocument = '/index.html';
 
   const distribution = new Distribution(stack, 'WebsiteDistribution', {
     domainNames: [domainName],
@@ -23,8 +34,8 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
       viewerProtocolPolicy,
     },
     additionalBehaviors: isLocalEnvironment() ? {} : {
-      '/api/*': {
-        origin: createApiGatewayOrigin(),
+      [apiPath]: {
+        origin: getWebsiteDomain(),
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
@@ -35,13 +46,13 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
       {
         httpStatus: 403,
         responseHttpStatus: 200,
-        responsePagePath: '/index.html',
+        responsePagePath: indexDocument,
         ttl: Duration.seconds(0),
       },
       {
         httpStatus: 404,
         responseHttpStatus: 200,
-        responsePagePath: '/index.html',
+        responsePagePath: indexDocument,
         ttl: Duration.seconds(0),
       },
     ],

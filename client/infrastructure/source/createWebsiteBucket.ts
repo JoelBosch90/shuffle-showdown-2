@@ -4,6 +4,12 @@ import { BucketDeployment, Source } from 'aws-cdk-lib/aws-s3-deployment';
 import { createCloudFrontDistribution } from './createCloudFrontDistribution';
 import { isLocalEnvironment } from './isLocalEnvironment';
 
+/**
+ *  This function creates an S3 bucket configured for website hosting and optionally sets up a CloudFront distribution.
+ *  @param    {Stack} stack - The CDK stack in which to create the bucket.
+ *  @param    {string} name - The name of the bucket.
+ *  @returns  {Bucket} - The created S3 bucket.
+ */
 export const createWebsiteBucket = (stack: Stack, name: string): Bucket => {
   const bucket = new Bucket(stack, 'Website', {
     bucketName: name.replace(/\:/g, '-'),

@@ -1,9 +1,17 @@
 import { OpenIdConnectProvider, PolicyDocument, PolicyStatement, Effect, Role, WebIdentityPrincipal } from "aws-cdk-lib/aws-iam";
 import { Stack } from "aws-cdk-lib/core/lib/stack";
 
+/**
+ *  This function creates a GitHub Actions deployment role with an OpenID Connect provider.
+ *  It allows GitHub Actions to assume the role for deployments.
+ *  @param    {Stack} stack - The CDK stack in which to create the role.
+ *  @param    {string} [thumbprint] - The thumbprint of the GitHub Actions certificate.
+ *  @returns  {Promise<Role>} - A promise that resolves to the created role.
+ */
 export const createGitHubActionsDeploymentRole = async (stack: Stack, thumbprint: string = ''): Promise<Role> => {
   const oidcProvider = new OpenIdConnectProvider(stack, 'GitHubOIDCProvider', {
     url: 'https://token.actions.githubusercontent.com',
+    // The thumbprint is optional, but it's recommended to provide it for security. As a default, we use an old thumbprint.
     thumbprints: ['74f3a68f16524f15424927704c9506f55a9316bd', thumbprint],
     clientIds: ['sts.amazonaws.com'],
   });
