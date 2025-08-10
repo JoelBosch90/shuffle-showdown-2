@@ -16,14 +16,8 @@ export function getApiGatewayOrigin(): HttpOrigin {
 
   // Turns the URL into a token to be resolved at deployment time.
   const apiGateWayUrl = Fn.importValue(apiGateWayUrlName);
-  const withoutProtocol = Fn.select(0, Fn.split('://', apiGateWayUrl));
+  const withoutProtocol = Fn.select(-1, Fn.split('://', apiGateWayUrl));
   const withoutPath = Fn.select(0, Fn.split('/', withoutProtocol));
-
-  console.log({
-    apiGateWayUrl,
-    withoutProtocol,
-    withoutPath,
-  });
 
   return new HttpOrigin(withoutPath, {
     protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
