@@ -57,20 +57,6 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
       },
     ],
     certificate,
-    // TMP
-    enableLogging: true,
-    logBucket: new Bucket(stack, 'LogBucket', {
-      removalPolicy: RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
-      objectOwnership: ObjectOwnership.OBJECT_WRITER,
-      blockPublicAccess: {
-        blockPublicAcls: false,
-        blockPublicPolicy: true,
-        ignorePublicAcls: false,
-        restrictPublicBuckets: true
-      },
-    }),
-    logFilePrefix: 'cloudfront-logs/',
   });
 
   return distribution;
