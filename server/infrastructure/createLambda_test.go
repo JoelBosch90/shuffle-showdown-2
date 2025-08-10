@@ -3,6 +3,7 @@ package main
 import (
 	"infrastructure/interfaces"
 	"infrastructure/mocks"
+	"os"
 	"testing"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
@@ -73,6 +74,7 @@ func TestCreateLambda(t *testing.T) {
 		// SETUP
 		t.Parallel()
 		mockUrl := "https://example.com"
+		os.Setenv("SHUFFLE_SHOWDOWN_API_PATH", "api")
 
 		// GIVEN
 		mockStack := mocks.NewMockStack(controller)

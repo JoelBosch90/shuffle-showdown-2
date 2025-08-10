@@ -29,7 +29,7 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		},
 	})
 
-	apiProxy := api.Root().AddResource(jsii.String("api"), &awsapigateway.ResourceOptions{})
+	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
 	integration := newIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{})
 
 	helloResource := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
