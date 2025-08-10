@@ -14,7 +14,10 @@ export function getApiGatewayOrigin(): HttpOrigin {
     throw new Error('API_GATEWAY_URL_NAME is not defined');
   }
 
-  return new HttpOrigin(`\${${apiGateWayUrlName}}`, {
+  // Turns the URL into a token to be resolved at deployment time.
+  const apiDomain = Fn.select(1, Fn.split('://', Fn.select(0, Fn.split('/', Fn.importValue(apiGateWayUrlName)))));
+
+  return new HttpOrigin(apiDomain, {
     protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
   });
 }

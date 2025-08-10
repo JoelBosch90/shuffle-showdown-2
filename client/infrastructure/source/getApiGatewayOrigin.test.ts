@@ -20,7 +20,7 @@ describe('getApiGatewayOrigin', () => {
     const origin = getApiGatewayOrigin();
 
     const bindResult = origin.bind({} as any, {} as any);
-    expect(bindResult.originProperty?.domainName).toBe(`\${${mockApiGatewayUrlName}}`);
+    expect(bindResult.originProperty?.domainName).toMatch(/\$\{Token\[TOKEN\.\d+\]\}/);
     expect((bindResult.originProperty?.customOriginConfig as any)?.originProtocolPolicy).toBe(OriginProtocolPolicy.HTTPS_ONLY);
   });
 });
