@@ -14,16 +14,7 @@ export function getApiGatewayOrigin(): HttpOrigin {
     throw new Error('API_GATEWAY_URL_NAME is not defined');
   }
 
-  const apiUrl = Fn.importValue(apiGateWayUrlName);
-
-  if (!apiUrl) {
-    throw new Error('API Gateway URL cannot be found');
-  }
-
-  const url = new URL(apiUrl);
-
-  return new HttpOrigin(url.hostname, {
+  return new HttpOrigin(`\${${apiGateWayUrlName}}`, {
     protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
-    originPath: url.pathname,
   });
 }
