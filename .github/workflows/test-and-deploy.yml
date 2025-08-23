@@ -12,11 +12,11 @@ on:
 
 env:
   AWS_REGION : "eu-west-1"
-  SHUFFLE_SHOWDOWN_DOMAIN: ${{ vars.SHUFFLE_SHOWDOWN_DOMAIN }}
-  SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN: ${{ secrets.SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN }}
-  SHUFFLE_SHOWDOWN_API_PATH: ${{ vars.SHUFFLE_SHOWDOWN_API_PATH }}
-  API_GATEWAY_URL_NAME: ${{ vars.API_GATEWAY_URL_NAME }}
-  STAGE: ${{ vars.STAGE }}
+  PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN: ${{ vars.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN }}
+  SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN: ${{ secrets.PRIVATE_SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN }}
+  PUBLIC_SHUFFLE_SHOWDOWN_API_PATH: ${{ vars.PUBLIC_SHUFFLE_SHOWDOWN_API_PATH }}
+  API_GATEWAY_URL_NAME: ${{ vars.PRIVATE_API_GATEWAY_URL_NAME }}
+  PUBLIC_STAGE: ${{ vars.PUBLIC_STAGE }}
 
 permissions:
   id-token: write
@@ -46,7 +46,7 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
     container: node:22-bullseye
-    needs: [ test-client, test-server ]
+    needs: [ test-client, deploy-server ]
     steps:
     - uses: actions/checkout@v4
     - run: ./commands.sh build client
@@ -61,7 +61,7 @@ jobs:
   deploy-server:
     runs-on: ubuntu-latest
     container: node:22-bullseye  # AWS CDK uses a JSII layer that requires Node.js
-    needs: [ test-client, test-server ]
+    needs: [ test-server ]
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-go@v5

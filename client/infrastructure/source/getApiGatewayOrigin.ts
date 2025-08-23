@@ -9,14 +9,14 @@ import { HttpOrigin } from "aws-cdk-lib/aws-cloudfront-origins";
  *  @returns  {HttpOrigin} - The constructed HttpOrigin for the API Gateway.
  */
 export function getApiGatewayOrigin(): HttpOrigin {
-  const apiGateWayUrlName = process.env.API_GATEWAY_URL_NAME;
+  const apiGateWayUrlName = process.env.PRIVATE_API_GATEWAY_URL_NAME;
   if (!apiGateWayUrlName) {
-    throw new Error('API_GATEWAY_URL_NAME is not defined');
+    throw new Error('PRIVATE_API_GATEWAY_URL_NAME is not defined');
   }
 
-  const stage = process.env.STAGE;
+  const stage = process.env.PUBLIC_STAGE;
   if (!stage) {
-    throw new Error('STAGE is not defined');
+    throw new Error('PUBLIC_STAGE is not defined');
   }
 
   // Turns the URL into a token to be resolved at deployment time.

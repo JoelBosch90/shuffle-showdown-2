@@ -22,23 +22,23 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		Handler: lambda,
 		Proxy:   jsii.Bool(false),
 		DefaultCorsPreflightOptions: &awsapigateway.CorsOptions{
-			AllowOrigins: jsii.Strings("https://" + os.Getenv("SHUFFLE_SHOWDOWN_DOMAIN")),
+			AllowOrigins: jsii.Strings("https://" + os.Getenv("PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN")),
 			AllowMethods: jsii.Strings("GET", "POST", "PUT", "DELETE", "OPTIONS"),
 			AllowHeaders: jsii.Strings("Content-Type", "Authorization", "Origin"),
 			MaxAge:       awscdk.Duration_Seconds(jsii.Number(300)),
 		},
 		DeployOptions: &awsapigateway.StageOptions{
-			StageName: jsii.String(os.Getenv("STAGE")),
+			StageName: jsii.String(os.Getenv("PUBLIC_STAGE")),
 		},
 	})
 
-	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
+	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("PUBLIC_SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
 	integration := newIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{})
 
 	helloResource := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
 	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
-	apiGateWayUrlName := os.Getenv("API_GATEWAY_URL_NAME")
+	apiGateWayUrlName := os.Getenv("PRIVATE_API_GATEWAY_URL_NAME")
 	newCfnOutput(stack, jsii.String(apiGateWayUrlName), &awscdk.CfnOutputProps{
 		Value:       api.Url(),
 		Description: jsii.String("The URL of the API Gateway"),

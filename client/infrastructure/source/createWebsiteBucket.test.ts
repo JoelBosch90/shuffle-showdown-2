@@ -23,7 +23,7 @@ describe('createWebsiteBucket', () => {
     mockCreateCloudFrontDistribution.mockReturnValue(mockDistribution);
     isLocalEnvironmentSpy.mockReturnValue(false);
 
-    process.env.SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN = fakeCertificateArn;
+    process.env.PRIVATE_SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN = fakeCertificateArn;
   });
 
   it('creates an S3 bucket with website hosting configured', () => {

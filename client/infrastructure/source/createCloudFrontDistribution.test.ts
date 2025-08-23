@@ -212,8 +212,6 @@ describe('createCloudFrontDistribution', () => {
 
     createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
 
-    console.log(Template.fromStack(mockStack).toJSON().Resources.WebsiteDistribution75DCDA0B.Properties.DistributionConfig);
-
     Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         CustomErrorResponses: Match.arrayWith([Match.objectLike({

@@ -25,8 +25,8 @@ bucket_name="clientstack-website-000000000000-eu-central-1"
 export AWS_ACCESS_KEY_ID=test
 export AWS_SECRET_ACCESS_KEY=test
 export AWS_REGION=eu-central-1
-export SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN=arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
-export SHUFFLE_SHOWDOWN_DOMAIN="$bucket_name"
+export PRIVATE_SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN=arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
+export PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN="$bucket_name"
 
 # Prepare and deploy the CDK stack to LocalStack
 cdklocal bootstrap

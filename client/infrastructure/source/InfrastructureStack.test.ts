@@ -24,11 +24,11 @@ describe('InfrastructureStack', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     getGitHubThumbprintSpy.mockResolvedValue(dummyThumbprint);
-    process.env.SHUFFLE_SHOWDOWN_DOMAIN = dummyDomain;
+    process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN = dummyDomain;
   });
 
   it('throws an error if the domain is not defined', async () => {
-    delete process.env.SHUFFLE_SHOWDOWN_DOMAIN;
+    delete process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN;
     const stack = new InfrastructureStack(new App(), 'TestStack', dummyStackProperties);
 
     const promise = stack.build();

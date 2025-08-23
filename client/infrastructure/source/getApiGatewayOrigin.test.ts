@@ -8,20 +8,20 @@ describe('getApiGatewayOrigin', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    process.env.API_GATEWAY_URL_NAME = mockApiGatewayUrlName;
-    process.env.STAGE = mockStage;
+    process.env.PRIVATE_API_GATEWAY_URL_NAME = mockApiGatewayUrlName;
+    process.env.PUBLIC_STAGE = mockStage;
   });
 
-  it('throws an error if API_GATEWAY_URL_NAME is not defined', () => {
-    delete process.env.API_GATEWAY_URL_NAME;
+  it('throws an error if PRIVATE_API_GATEWAY_URL_NAME is not defined', () => {
+    delete process.env.PRIVATE_API_GATEWAY_URL_NAME;
 
-    expect(() => getApiGatewayOrigin()).toThrow('API_GATEWAY_URL_NAME is not defined');
+    expect(() => getApiGatewayOrigin()).toThrow('PRIVATE_API_GATEWAY_URL_NAME is not defined');
   });
 
-  it('throws an error if STAGE is not defined', () => {
-    delete process.env.STAGE;
+  it('throws an error if PUBLIC_STAGE is not defined', () => {
+    delete process.env.PUBLIC_STAGE;
 
-    expect(() => getApiGatewayOrigin()).toThrow('STAGE is not defined');
+    expect(() => getApiGatewayOrigin()).toThrow('PUBLIC_STAGE is not defined');
   });
 
   it('returns a valid HttpOrigin', () => {
