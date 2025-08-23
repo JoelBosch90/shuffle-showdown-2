@@ -35,7 +35,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
     },
     additionalBehaviors: isLocalEnvironment() ? {} : {
       [apiPath]: {
-        origin: getApiGatewayOrigin(),
+        origin: getApiGatewayOrigin(stack),
         allowedMethods: AllowedMethods.ALLOW_ALL,
         cachePolicy: CachePolicy.CACHING_DISABLED,
         originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,

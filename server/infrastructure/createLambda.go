@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 	"github.com/aws/jsii-runtime-go"
 )
 
@@ -39,10 +40,10 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
 	apiGateWayUrlName := os.Getenv("PRIVATE_API_GATEWAY_URL_NAME")
-	newCfnOutput(stack, jsii.String(apiGateWayUrlName), &awscdk.CfnOutputProps{
-		Value:       api.Url(),
-		Description: jsii.String("The URL of the API Gateway"),
-		ExportName:  jsii.String(apiGateWayUrlName),
+	awsssm.NewStringParameter(stack, jsii.String(apiGateWayUrlName), &awsssm.StringParameterProps{
+		ParameterName: jsii.String(apiGateWayUrlName),
+		StringValue:   api.Url(),
+		Description:   jsii.String("API Gateway URL for the application"),
 	})
 
 	return lambda
