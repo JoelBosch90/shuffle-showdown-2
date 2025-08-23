@@ -14,6 +14,11 @@ export function getApiGatewayOrigin(): HttpOrigin {
     throw new Error('API_GATEWAY_URL_NAME is not defined');
   }
 
+  const stage = process.env.STAGE;
+  if (!stage) {
+    throw new Error('STAGE is not defined');
+  }
+
   // Turns the URL into a token to be resolved at deployment time.
   const apiGateWayUrl = Fn.importValue(apiGateWayUrlName);
   const withoutProtocol = Fn.select(1, Fn.split('://', apiGateWayUrl));
@@ -21,6 +26,6 @@ export function getApiGatewayOrigin(): HttpOrigin {
 
   return new HttpOrigin(withoutPath, {
     protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
-    originPath: '/prod',
+    originPath: `/${stage}`,
   });
 }
