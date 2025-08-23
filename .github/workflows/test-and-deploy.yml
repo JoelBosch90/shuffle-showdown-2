@@ -31,18 +31,6 @@ jobs:
     - run: ./commands.sh build client
     - run: ./commands.sh test client
 
-  test-server:
-    runs-on: ubuntu-latest
-    container: node:22-bullseye # AWS CDK uses a JSII layer that requires Node.js
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        cache: false
-        go-version-file: 'server/infrastructure/go.mod'
-    - run: ./commands.sh build server
-    - run: ./commands.sh test server
-
   deploy-client:
     runs-on: ubuntu-latest
     container: node:22-bullseye
@@ -57,6 +45,18 @@ jobs:
         role-session-name: GitHubActionsDeployment-${{ github.run_id }}
         aws-region: eu-central-1
     - run: ./commands.sh deploy client
+
+  test-server:
+    runs-on: ubuntu-latest
+    container: node:22-bullseye # AWS CDK uses a JSII layer that requires Node.js
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        cache: false
+        go-version-file: 'server/infrastructure/go.mod'
+    - run: ./commands.sh build server
+    - run: ./commands.sh test server
 
   deploy-server:
     runs-on: ubuntu-latest

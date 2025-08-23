@@ -20,20 +20,15 @@ describe('InfrastructureStack', () => {
       region: dummyRegion,
     },
   };
+  const defaultDummyAccount = '234567890123';
+  const defaultDummyRegion = 'us-west-2';
 
   beforeEach(() => {
     jest.resetAllMocks();
     getGitHubThumbprintSpy.mockResolvedValue(dummyThumbprint);
     process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN = dummyDomain;
-  });
-
-  it('throws an error if the domain is not defined', async () => {
-    delete process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN;
-    const stack = new InfrastructureStack(new App(), 'TestStack', dummyStackProperties);
-
-    const promise = stack.build();
-
-    await expect(promise).rejects.toThrow('Domain is not defined in environment variables.');
+    process.env.CDK_DEFAULT_ACCOUNT = defaultDummyAccount;
+    process.env.CDK_DEFAULT_REGION = defaultDummyRegion;
   });
 
   it('creates a stack with the provided properties', () => {
@@ -45,7 +40,12 @@ describe('InfrastructureStack', () => {
   it('creates a stack without the provided properties', () => {
     new InfrastructureStack(new App(), 'TestStack');
 
-    expect(Stack).toHaveBeenCalledWith(expect.any(App), 'TestStack', {});
+    expect(Stack).toHaveBeenCalledWith(expect.any(App), 'TestStack', {
+      env: {
+        account: defaultDummyAccount,
+        region: defaultDummyRegion,
+      },
+    });
   })
 
   it('creates a website bucket with a proper name', async () => {

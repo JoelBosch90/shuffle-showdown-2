@@ -3,7 +3,7 @@ import { getApiGatewayOrigin } from './getApiGatewayOrigin';
 import { Stack } from 'aws-cdk-lib';
 import { StringParameter } from 'aws-cdk-lib/aws-ssm';
 
-const valueFromLookupSpy = jest.spyOn(StringParameter, 'valueFromLookup');
+const valueForStringParameterSpy = jest.spyOn(StringParameter, 'valueForStringParameter');
 
 describe('getApiGatewayOrigin', () => {
   const mockApiGatewayUrl = 'MockApiGatewayUrl.execute-api.us-east-1.amazonaws.com';
@@ -16,7 +16,7 @@ describe('getApiGatewayOrigin', () => {
 
     process.env.PRIVATE_API_GATEWAY_URL_NAME = mockApiGatewayUrlName;
     process.env.PUBLIC_STAGE = mockStage;
-    valueFromLookupSpy.mockReturnValue(`https://${mockApiGatewayUrl}`);
+    valueForStringParameterSpy.mockReturnValue(`https://${mockApiGatewayUrl}`);
   });
 
   it('throws an error if PRIVATE_API_GATEWAY_URL_NAME is not defined', () => {

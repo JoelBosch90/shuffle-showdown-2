@@ -15,6 +15,8 @@ current_directory=$(pwd)
 client_root_directory="${current_directory%/*}"
 infrastructure_directory="$client_root_directory/infrastructure"
 
+. ../../shared/commands/functions/load_environment.sh
+
 cd $infrastructure_directory
 cdk doctor
 cdk synth

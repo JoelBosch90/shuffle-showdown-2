@@ -26,6 +26,17 @@ describe('createWebsiteBucket', () => {
     process.env.PRIVATE_SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN = fakeCertificateArn;
   });
 
+  it('uses a default bucket name if none is provided', () => {
+    const app = new App();
+    const stack = new Stack(app, stackName);
+
+    createWebsiteBucket(stack);
+
+    Template.fromStack(stack).hasResourceProperties('AWS::S3::Bucket', {
+      BucketName: 'default-bucket-name',
+    });
+  });
+
   it('creates an S3 bucket with website hosting configured', () => {
     const app = new App();
     const stack = new Stack(app, stackName);

@@ -18,22 +18,24 @@ export class InfrastructureStack extends Stack {
    *  @throws   {Error} - If the PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN environment variable is not defined.
    */
   constructor(scope: Construct, id: string, props: StackProps = {}) {
-    super(scope, id, props);
+    const stackProps: StackProps = {
+      env: {
+        account: process.env.CDK_DEFAULT_ACCOUNT,
+        region: process.env.CDK_DEFAULT_REGION
+      },
+      ...props,
+    }
+
+    super(scope, id, stackProps);
   }
 
   /**
    *  Builds the infrastructure stack.
    *  This method creates the website bucket and sets up the GitHub Actions deployment role.
-   *  @throws   {Error} - If the PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN environment variable is not defined.
    *  @returns  {Promise<void>} - A promise that resolves when the stack is built.
    */
   public async build(): Promise<void> {
-    const domain = process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN;
-    if (!domain) {
-      throw new Error('Domain is not defined in environment variables.');
-    }
-
-    createWebsiteBucket(this, domain);
+    createWebsiteBucket(this, process.env.PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN);
     await this.buildGitHubActionsDeploymentRole();
   }
 

@@ -20,7 +20,7 @@ export function getApiGatewayOrigin(stack: Stack): HttpOrigin {
     throw new Error('PUBLIC_STAGE is not defined');
   }
 
-  const apiGatewayUrl = StringParameter.valueFromLookup(stack, apiGateWayUrlName);
+  const apiGatewayUrl = StringParameter.valueForStringParameter(stack, apiGateWayUrlName);
   const withoutProtocol = Fn.select(1, Fn.split('://', apiGatewayUrl));
   const withoutPath = Fn.select(0, Fn.split('/', withoutProtocol));
 

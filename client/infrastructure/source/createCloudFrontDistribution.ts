@@ -1,7 +1,7 @@
-import { Stack, Duration, RemovalPolicy } from 'aws-cdk-lib';
+import { Stack, Duration } from 'aws-cdk-lib';
 import { AllowedMethods, CachePolicy, Distribution, OriginProtocolPolicy, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Bucket, ObjectOwnership } from 'aws-cdk-lib/aws-s3';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { createCertificate } from './createCertificate';
 import { isLocalEnvironment } from './isLocalEnvironment';
 import { getApiPath } from './getApiPath';
@@ -15,14 +15,14 @@ import { getApiGatewayOrigin } from './getApiGatewayOrigin';
  *  @param    {string} domainName - The domain name for the CloudFront distribution.
  *  @returns  {Distribution} - The created CloudFront distribution.
  */
-export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domainName: string): Distribution => {
+export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domainName?: string): Distribution => {
   const certificate = createCertificate(stack);
   const viewerProtocolPolicy = ViewerProtocolPolicy.REDIRECT_TO_HTTPS;
   const apiPath = `/${getApiPath()}/*`;
   const indexDocument = '/index.html';
 
   const distribution = new Distribution(stack, 'WebsiteDistribution', {
-    domainNames: [domainName],
+    domainNames: domainName ? [domainName] : undefined,
     defaultBehavior: {
       origin: new HttpOrigin(bucket.bucketWebsiteDomainName, {
         protocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
@@ -56,7 +56,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
         ttl: Duration.seconds(0),
       },
     ],
-    certificate,
+    certificate: domainName ? certificate : undefined,
   });
 
   return distribution;

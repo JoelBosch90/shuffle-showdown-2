@@ -10,9 +10,9 @@ import { isLocalEnvironment } from './isLocalEnvironment';
  *  @param    {string} name - The name of the bucket.
  *  @returns  {Bucket} - The created S3 bucket.
  */
-export const createWebsiteBucket = (stack: Stack, name: string): Bucket => {
+export const createWebsiteBucket = (stack: Stack, name?: string): Bucket => {
   const bucket = new Bucket(stack, 'Website', {
-    bucketName: name.replace(/\:/g, '-'),
+    bucketName: name?.replace(/\:/g, '-') ?? 'default-bucket-name',
     removalPolicy: RemovalPolicy.DESTROY,
     autoDeleteObjects: true,
     publicReadAccess: true,

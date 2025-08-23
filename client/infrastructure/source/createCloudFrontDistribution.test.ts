@@ -236,4 +236,17 @@ describe('createCloudFrontDistribution', () => {
       },
     });
   });
+
+  it('uses no certificate when no domain name is provided', () => {
+    const mockStack = new Stack();
+    const mockBucket = new Bucket(mockStack, mockBucketName);
+
+    createCloudFrontDistribution(mockStack, mockBucket);
+
+    Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
+      DistributionConfig: {
+        ViewerCertificate: Match.absent(),
+      },
+    });
+  });
 });
