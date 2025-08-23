@@ -7,7 +7,7 @@
 	onMount(async () => {
 		const apiPath = `/${PUBLIC_STAGE}/${PUBLIC_SHUFFLE_SHOWDOWN_API_PATH}`;
 
-		const response = await fetch(`${apiPath}/hello`).catch();
+		const response = await fetch(`${apiPath}/hello`).catch(() => {});
 
 		if (response?.ok) {
 			message = await response.text();
