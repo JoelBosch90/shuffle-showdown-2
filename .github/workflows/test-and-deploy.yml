@@ -46,7 +46,7 @@ jobs:
   deploy-client:
     runs-on: ubuntu-latest
     container: node:22-bullseye
-    needs: [ test-client, deploy-server ]
+    needs: [ test-client ]
     steps:
     - uses: actions/checkout@v4
     - run: ./commands.sh build client
