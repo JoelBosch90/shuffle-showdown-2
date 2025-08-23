@@ -12,4 +12,4 @@ type LambdaParameters struct {
 	Gateway    string
 }
 
-type CreateLambda func(stack awscdk.Stack, params LambdaParameters, newFunction NewFunction, newApi NewLambdaRestApi, newIntegration NewLambdaIntegration, newCfnOutput NewCfnOutput) awslambda.Function
+type CreateLambda func(stack awscdk.Stack, params LambdaParameters, newFunction NewFunction, newApi NewLambdaRestApi, newIntegration NewLambdaIntegration, newStringParameter NewStringParameter) awslambda.Function

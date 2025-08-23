@@ -11,7 +11,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newCfnOutput interfaces.NewCfnOutput) awslambda.Function {
+func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newStringParameter interfaces.NewStringParameter) awslambda.Function {
 	lambda := newFunction(stack, jsii.String(parameters.Name), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),
@@ -40,7 +40,7 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
 	apiGateWayUrlName := os.Getenv("PRIVATE_API_GATEWAY_URL_NAME")
-	awsssm.NewStringParameter(stack, jsii.String(apiGateWayUrlName), &awsssm.StringParameterProps{
+	newStringParameter(stack, jsii.String(apiGateWayUrlName), &awsssm.StringParameterProps{
 		ParameterName: jsii.String(apiGateWayUrlName),
 		StringValue:   api.Url(),
 		Description:   jsii.String("API Gateway URL for the application"),

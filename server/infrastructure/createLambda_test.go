@@ -6,9 +6,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/golang/mock/gomock"
 )
@@ -54,12 +54,12 @@ func (m *MockNewLambdaIntegration) Get() interfaces.NewLambdaIntegration {
 	}
 }
 
-type MockNewCfnOutput struct {
+type MockNewStringParameter struct {
 	mocks.Function
 }
 
-func (m *MockNewCfnOutput) Get() interfaces.NewCfnOutput {
-	return func(scope constructs.Construct, id *string, props *awscdk.CfnOutputProps) awscdk.CfnOutput {
+func (m *MockNewStringParameter) Get() interfaces.NewStringParameter {
+	return func(scope constructs.Construct, id *string, props *awsssm.StringParameterProps) awsssm.StringParameter {
 		m.SetTimesCalled(m.TimesCalled() + 1)
 
 		return nil
@@ -93,7 +93,7 @@ func TestCreateLambda(t *testing.T) {
 		mockNewApi := MockNewLambdaRestApi{}
 		mockNewApi.SetApi(mockApi)
 		mockNewIntegration := MockNewLambdaIntegration{}
-		mockNewCfnOutput := MockNewCfnOutput{}
+		mockNewStringParameter := MockNewStringParameter{}
 		mockLambdaParameters := interfaces.LambdaParameters{
 			Name:       "GreetFunction",
 			SourcePath: "../controllers/greet",
@@ -102,7 +102,7 @@ func TestCreateLambda(t *testing.T) {
 		}
 
 		// WHEN
-		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewCfnOutput.Get())
+		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewStringParameter.Get())
 
 		// THEN
 		newFunctionTimesCalled := mockNewFunction.TimesCalled()
@@ -120,9 +120,9 @@ func TestCreateLambda(t *testing.T) {
 			t.Errorf("Expected newIntegration to be called once, but was called %d times", newIntegrationTimesCalled)
 		}
 
-		newCfnOutputTimesCalled := mockNewCfnOutput.TimesCalled()
-		if newCfnOutputTimesCalled != 1 {
-			t.Errorf("Expected newCfnOutput to be called once, but was called %d times", newCfnOutputTimesCalled)
+		newStringParameterTimesCalled := mockNewStringParameter.TimesCalled()
+		if newStringParameterTimesCalled != 1 {
+			t.Errorf("Expected newStringParameter to be called once, but was called %d times", newStringParameterTimesCalled)
 		}
 	})
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 )
 
 func setup(
@@ -45,7 +46,7 @@ func setup(
 			awslambda.NewFunction,
 			newLambdaRestApi,
 			newLambdaIntegration,
-			awscdk.NewCfnOutput,
+			awsssm.NewStringParameter,
 		)
 	}
 
