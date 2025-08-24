@@ -17,11 +17,13 @@ type MockNewFunction struct {
 	mocks.Function
 }
 
+var mockFunction *mocks.MockFunction
+
 func (m *MockNewFunction) Get() interfaces.NewFunction {
 	return func(scope constructs.Construct, id *string, props *awslambda.FunctionProps) awslambda.Function {
 		m.SetTimesCalled(m.TimesCalled() + 1)
 
-		return nil
+		return mockFunction
 	}
 }
 
@@ -79,27 +81,39 @@ func TestCreateLambda(t *testing.T) {
 
 		// GIVEN
 		mockStack := mocks.NewMockStack(controller)
-		mockApiProxyIResource := mocks.NewMockIResource(controller)
-		mockLambdaResource := mocks.NewMockResource(controller)
-		mockResource := mocks.NewMockResource(controller)
-		mockApi := mocks.NewMockRestApi(controller)
-		mockApi.EXPECT().Root().Return(mockApiProxyIResource).Times(1)
-		mockApi.EXPECT().Url().Return(&mockUrl).Times(1)
-		mockApiProxyIResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockResource).Times(1)
-		mockResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockLambdaResource).Times(1)
-		mockLambdaResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 
-		mockNewFunction := MockNewFunction{}
-		mockNewApi := MockNewLambdaRestApi{}
-		mockNewApi.SetApi(mockApi)
-		mockNewIntegration := MockNewLambdaIntegration{}
-		mockNewStringParameter := MockNewStringParameter{}
+		mockTable := mocks.NewMockTable(controller)
+		mockTable.EXPECT().GrantReadWriteData(gomock.Any()).Times(1)
+		mockTable.EXPECT().TableName().Times(1)
+
+		mockLambdaResource := mocks.NewMockResource(controller)
+		mockLambdaResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 		mockLambdaParameters := interfaces.LambdaParameters{
 			Name:       "GreetFunction",
 			SourcePath: "../controllers/greet",
 			UrlPath:    "hello",
 			Gateway:    "HelloWorldGateway",
+			Table:      mockTable,
 		}
+
+		mockResource := mocks.NewMockResource(controller)
+		mockResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockLambdaResource).Times(1)
+
+		mockApiProxyIResource := mocks.NewMockIResource(controller)
+		mockApiProxyIResource.EXPECT().AddResource(gomock.Any(), gomock.Any()).Return(mockResource).Times(1)
+
+		mockApi := mocks.NewMockRestApi(controller)
+		mockApi.EXPECT().Root().Return(mockApiProxyIResource).Times(1)
+		mockApi.EXPECT().Url().Return(&mockUrl).Times(1)
+		mockNewApi := MockNewLambdaRestApi{}
+		mockNewApi.SetApi(mockApi)
+
+		mockNewFunction := MockNewFunction{}
+		mockNewIntegration := MockNewLambdaIntegration{}
+		mockNewStringParameter := MockNewStringParameter{}
+
+		mockFunction = mocks.NewMockFunction(controller)
+		mockFunction.EXPECT().AddEnvironment(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 
 		// WHEN
 		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewStringParameter.Get())

@@ -36,8 +36,8 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("PUBLIC_SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
 	integration := newIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{})
 
-	helloResource := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
-	helloResource.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
+	lambdaEndpoint := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
+	lambdaEndpoint.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
 	apiGateWayUrlName := os.Getenv("PRIVATE_API_GATEWAY_URL_NAME")
 	newStringParameter(stack, jsii.String(apiGateWayUrlName), &awsssm.StringParameterProps{
@@ -45,6 +45,9 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		StringValue:   api.Url(),
 		Description:   jsii.String("API Gateway URL for the application"),
 	})
+
+	parameters.Table.GrantReadWriteData(lambda)
+	lambda.AddEnvironment(jsii.String("TABLE_NAME"), parameters.Table.TableName(), nil)
 
 	return lambda
 }

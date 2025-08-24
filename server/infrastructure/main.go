@@ -21,6 +21,7 @@ func main() {
 			return awscdk.NewStack(app, stackId, props)
 		},
 		createLambda,
+		createTable,
 		func(scope constructs.Construct, id *string, props *awsapigateway.LambdaRestApiProps) interfaces.RestApi {
 			return awsapigateway.NewLambdaRestApi(scope, id, props)
 		},

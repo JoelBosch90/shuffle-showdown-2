@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/golang/mock/gomock"
@@ -54,6 +55,18 @@ func (m *mockCreateLambda) Get() interfaces.CreateLambda {
 	}
 }
 
+type mockCreateTable struct {
+	mocks.Function
+}
+
+func (m *mockCreateTable) Get() interfaces.CreateTable {
+	return func(stack awscdk.Stack, params interfaces.TableParameters, newTable interfaces.NewTable) awsdynamodb.Table {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return nil
+	}
+}
+
 type mockNewLambdaRestApi struct {
 	mocks.Function
 }
@@ -93,12 +106,13 @@ func TestSetup(t *testing.T) {
 		mockNewApp.SetApp(mockApp)
 		mockNewStack := mockNewStack{}
 		mockCreateLambda := mockCreateLambda{}
+		mockCreateTable := mockCreateTable{}
 		mockNewLambdaRestApi := mockNewLambdaRestApi{}
 		mockNewLambdaIntegration := mockNewLambdaIntegration{}
 		mockCloseRuntime := mocks.Function{}
 
 		// WHEN
-		setup(mockNewApp.Get(), mockNewStack.Get(), mockCreateLambda.Get(), mockNewLambdaRestApi.Get(), mockNewLambdaIntegration.Get(), mockCloseRuntime.Get(), nil)
+		setup(mockNewApp.Get(), mockNewStack.Get(), mockCreateLambda.Get(), mockCreateTable.Get(), mockNewLambdaRestApi.Get(), mockNewLambdaIntegration.Get(), mockCloseRuntime.Get(), nil)
 
 		// THEN
 		appCreatorCalled := mockNewApp.TimesCalled()
@@ -112,6 +126,10 @@ func TestSetup(t *testing.T) {
 		createLambdaCalled := mockCreateLambda.TimesCalled()
 		if createLambdaCalled != 1 {
 			t.Errorf("Expected CreateLambda to be called once, but was called %d times", createLambdaCalled)
+		}
+		createTableCalled := mockCreateTable.TimesCalled()
+		if createTableCalled != 1 {
+			t.Errorf("Expected CreateTable to be called once, but was called %d times", createTableCalled)
 		}
 		closeRuntimeCalled := mockCloseRuntime.TimesCalled()
 		if closeRuntimeCalled != 1 {
