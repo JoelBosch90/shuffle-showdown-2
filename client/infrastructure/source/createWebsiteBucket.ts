@@ -30,7 +30,6 @@ export const createWebsiteBucket = (stack: Stack, name?: string): Bucket => {
   new BucketDeployment(stack, 'DeployWebsite', {
     sources: [Source.asset('../app/build')],
     destinationBucket: bucket,
-    contentType: 'auto',
   });
 
   let websiteUrl = bucket.bucketWebsiteUrl;
