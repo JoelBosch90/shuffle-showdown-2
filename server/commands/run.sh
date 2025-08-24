@@ -22,6 +22,10 @@ cd $infrastructure_directory
 export AWS_ACCESS_KEY_ID=test
 export AWS_SECRET_ACCESS_KEY=test
 export AWS_REGION=eu-central-1
+export PRIVATE_API_GATEWAY_URL_NAME=ApiGateway
+export PUBLIC_SHUFFLE_SHOWDOWN_API_PATH=api
+export PUBLIC_STAGE=dev
+
 
 # Prepare and deploy the CDK stack to LocalStack
 cdklocal bootstrap

@@ -27,6 +27,9 @@ export AWS_SECRET_ACCESS_KEY=test
 export AWS_REGION=eu-central-1
 export PRIVATE_SHUFFLE_SHOWDOWN_DOMAIN_CERTIFICATE_ARN=arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012
 export PUBLIC_SHUFFLE_SHOWDOWN_DOMAIN="$bucket_name"
+export PRIVATE_API_GATEWAY_URL_NAME=ApiGateway
+export PUBLIC_SHUFFLE_SHOWDOWN_API_PATH=api
+export PUBLIC_STAGE=dev
 
 # Prepare and deploy the CDK stack to LocalStack
 cdklocal bootstrap
