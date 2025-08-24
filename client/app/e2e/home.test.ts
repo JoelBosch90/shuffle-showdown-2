@@ -6,12 +6,11 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, '../../../.env') });
 
-const stage = process.env.PUBLIC_STAGE || 'test';
 const apiPath = process.env.PUBLIC_SHUFFLE_SHOWDOWN_API_PATH || 'api';
 
 // TODO: actually test this against the server without mocking.
 test.describe('Home page', () => {
-  const helloEndpoint = `/${stage}/${apiPath}/hello`;
+  const helloEndpoint = `/${apiPath}/hello`;
   const expectedLoadingMessage = 'loading message...';
 
   test('shows loading message initially and then updates with server response', async ({ page }) => {

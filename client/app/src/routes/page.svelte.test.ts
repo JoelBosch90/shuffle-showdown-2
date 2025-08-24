@@ -3,13 +3,11 @@ import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import Page from './+page.svelte';
 
-const { mockStage, mockApiPath } = vi.hoisted(() => ({
-  mockStage: 'test',
+const { mockApiPath } = vi.hoisted(() => ({
   mockApiPath: 'api',
 }));
 
 vi.mock('$env/static/public', () => ({
-  PUBLIC_STAGE: mockStage,
   PUBLIC_SHUFFLE_SHOWDOWN_API_PATH: mockApiPath
 }));
 
@@ -47,7 +45,7 @@ describe('/+page.svelte', () => {
 
     expect(screen.getByText('loading message...')).toBeInTheDocument();
     await waitFor(() => expect(screen.getByText(message)).toBeInTheDocument());
-    expect(global.fetch).toHaveBeenCalledWith(`/${mockStage}/${mockApiPath}/hello`);
+    expect(global.fetch).toHaveBeenCalledWith(`/${mockApiPath}/hello`);
   });
 
   test('should keep loading message on failed fetch', async () => {
@@ -61,7 +59,7 @@ describe('/+page.svelte', () => {
 
     await waitFor(() => {
       expect(screen.getByText('loading message...')).toBeInTheDocument();
-      expect(global.fetch).toHaveBeenCalledWith(`/${mockStage}/${mockApiPath}/hello`);
+      expect(global.fetch).toHaveBeenCalledWith(`/${mockApiPath}/hello`);
     });
   });
 
