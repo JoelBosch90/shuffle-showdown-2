@@ -15,16 +15,7 @@ export const createWebsiteBucket = (stack: Stack, name?: string): Bucket => {
     bucketName: name?.replace(/\:/g, '-') ?? 'default-bucket-name',
     removalPolicy: RemovalPolicy.DESTROY,
     autoDeleteObjects: true,
-    publicReadAccess: true,
-    blockPublicAccess: new BlockPublicAccess({
-      blockPublicAcls: false,
-      blockPublicPolicy: false,
-      ignorePublicAcls: false,
-      restrictPublicBuckets: false,
-    }),
     versioned: true,
-    websiteIndexDocument: 'index.html',
-    websiteErrorDocument: 'index.html',
   });
 
   new BucketDeployment(stack, 'DeployWebsite', {
