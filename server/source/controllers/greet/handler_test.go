@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"testing"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -42,9 +43,10 @@ func TestHandler(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			// SETUP
 			t.Parallel()
+			ctx := context.TODO()
 
 			// WHEN
-			got, error := handler(testCase.request)
+			got, error := handler(ctx, testCase.request)
 
 			// THEN
 			if error != testCase.error {

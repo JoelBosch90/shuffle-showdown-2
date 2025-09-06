@@ -9,7 +9,7 @@ import (
 )
 
 func createTable(stack awscdk.Stack, parameters interfaces.TableParameters, newTable interfaces.NewTable) awsdynamodb.Table {
-	table := newTable(stack, jsii.String(parameters.ID), &awsdynamodb.TableProps{
+	return newTable(stack, jsii.String(parameters.ID), &awsdynamodb.TableProps{
 		PartitionKey: &awsdynamodb.Attribute{
 			Name: jsii.String(parameters.PartitionKeyName),
 			Type: awsdynamodb.AttributeType_STRING,
@@ -17,6 +17,4 @@ func createTable(stack awscdk.Stack, parameters interfaces.TableParameters, newT
 		BillingMode:   awsdynamodb.BillingMode_PAY_PER_REQUEST,
 		RemovalPolicy: awscdk.RemovalPolicy_DESTROY,
 	})
-
-	return table
 }
