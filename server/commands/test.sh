@@ -15,15 +15,27 @@ set -e
 
 TEST_COVERAGE_THRESHOLD=100
 SKIP_FILE_TAG=skip_test
+EXCLUDED_DIRECTORIES=(
+  "interfaces"
+  "mocks"
+)
 
 current_directory=$(pwd)
 server_root_directory=${current_directory%/*}
 
 test_directory() {
+  # Skip if the directory is in the excluded list.
+  for excluded_directory in "${EXCLUDED_DIRECTORIES[@]}"; do
+    if [[ $1 == *"/$excluded_directory"* ]]; then
+      echo "Skipping excluded directory $1"
+      return
+    fi
+  done
+
   cd $1
   echo Testing in $1
   
-  # Run the tests for this controller.
+  # Run the tests for this controller. Skip EXCLUDED_FILES AND EXCLUDED_DIRECTORIES.  
   go test -coverprofile=coverage.out -tags $SKIP_FILE_TAG
 
   # Display the test results.
@@ -50,7 +62,7 @@ test_infrastructure() {
 
 # Test all controllers in the project.
 test_controllers() {
-  for controller_directory in $server_root_directory/source/controllers/*/; do
+  for controller_directory in $server_root_directory/source/controllers/*/*; do
     if [ -d "$controller_directory" ]; then
       test_directory "$controller_directory"
     fi

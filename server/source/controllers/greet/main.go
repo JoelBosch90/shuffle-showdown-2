@@ -4,9 +4,11 @@
 package main
 
 import (
+	"greet/handler"
+
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
 func main() {
-	setup(lambda.Start)
+	lambda.Start(handler.Handle)
 }
