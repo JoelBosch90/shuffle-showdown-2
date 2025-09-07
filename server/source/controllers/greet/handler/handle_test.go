@@ -136,70 +136,6 @@ func TestHandle(t *testing.T) {
 			expectError:          false,
 		},
 		{
-			name: "returns 500 when first getMessage fails with error",
-			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
-				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
-					return nil, errors.New("DynamoDB connection error")
-				}
-			},
-			setupSetMessageMock: func() func(context.Context) error {
-				return func(ctx context.Context) error {
-					t.Error("setMessage should not be called when first getMessage fails")
-					return nil
-				}
-			},
-			expectedStatusCode:   500,
-			expectedBodyContains: "Failed to retrieve message",
-			expectError:          true,
-		},
-		{
-			name: "returns 500 when setMessage fails",
-			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
-				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
-					// Return empty item to trigger setMessage call
-					return &dynamodb.GetItemOutput{Item: nil}, nil
-				}
-			},
-			setupSetMessageMock: func() func(context.Context) error {
-				return func(ctx context.Context) error {
-					return errors.New("Failed to create item")
-				}
-			},
-			expectedStatusCode:   500,
-			expectedBodyContains: "Failed to save message",
-			expectError:          true, // Your function returns the setError
-		},
-		{
-			name: "returns 500 when second getMessage fails after setMessage succeeds",
-			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
-				callCount := 0
-
-				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
-					callCount++
-
-					switch callCount {
-					case 1:
-						// First call returns empty (triggers setMessage)
-						return &dynamodb.GetItemOutput{Item: nil}, nil
-					case 2:
-						// Second call fails
-						return nil, errors.New("Database error on second call")
-					default:
-						t.Errorf("getMessage called too many times: %d", callCount)
-						return nil, errors.New("too many calls")
-					}
-				}
-			},
-			setupSetMessageMock: func() func(context.Context) error {
-				return func(ctx context.Context) error {
-					return nil // setMessage succeeds
-				}
-			},
-			expectedStatusCode:   500,
-			expectedBodyContains: "Failed to retrieve message",
-			expectError:          true, // Your function returns getError2
-		},
-		{
 			name: "creates new message when item exists but missing required attribute",
 			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
 				callCount := 0
@@ -247,6 +183,70 @@ func TestHandle(t *testing.T) {
 			expectError:          false,
 		},
 		{
+			name: "returns 500 when first getMessage fails with error",
+			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
+				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
+					return nil, errors.New("DynamoDB connection error")
+				}
+			},
+			setupSetMessageMock: func() func(context.Context) error {
+				return func(ctx context.Context) error {
+					t.Error("setMessage should not be called when first getMessage fails")
+					return nil
+				}
+			},
+			expectedStatusCode:   500,
+			expectedBodyContains: "Failed to retrieve message",
+			expectError:          true,
+		},
+		{
+			name: "returns 500 when setMessage fails",
+			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
+				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
+					// Return empty item to trigger setMessage call
+					return &dynamodb.GetItemOutput{Item: nil}, nil
+				}
+			},
+			setupSetMessageMock: func() func(context.Context) error {
+				return func(ctx context.Context) error {
+					return errors.New("Failed to create item")
+				}
+			},
+			expectedStatusCode:   500,
+			expectedBodyContains: "Failed to save message",
+			expectError:          true,
+		},
+		{
+			name: "returns 500 when second getMessage fails after setMessage succeeds",
+			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
+				callCount := 0
+
+				return func(ctx context.Context) (*dynamodb.GetItemOutput, error) {
+					callCount++
+
+					switch callCount {
+					case 1:
+						// First call returns empty (triggers setMessage)
+						return &dynamodb.GetItemOutput{Item: nil}, nil
+					case 2:
+						// Second call fails
+						return nil, errors.New("Database error on second call")
+					default:
+						t.Errorf("getMessage called too many times: %d", callCount)
+						return nil, errors.New("too many calls")
+					}
+				}
+			},
+			setupSetMessageMock: func() func(context.Context) error {
+				return func(ctx context.Context) error {
+					return nil // setMessage succeeds
+				}
+			},
+			expectedStatusCode:   500,
+			expectedBodyContains: "Failed to retrieve message",
+			expectError:          true,
+		},
+		{
 			name: "returns 500 when item has wrong attribute type",
 			setupGetMessageMock: func() func(context.Context) (*dynamodb.GetItemOutput, error) {
 				callCount := 0
@@ -263,10 +263,10 @@ func TestHandle(t *testing.T) {
 							},
 						}, nil
 					case 2:
-						// Second call returns correct message after setMessage
+						// Second call returns item with wrong attribute type again
 						return &dynamodb.GetItemOutput{
 							Item: map[string]types.AttributeValue{
-								MessagePartitionPropertyName: &types.AttributeValueMemberS{Value: "Hello from the database, lovely world!"},
+								MessagePartitionPropertyName: &types.AttributeValueMemberN{Value: "123"}, // Number instead of string
 							},
 						}, nil
 					default:
@@ -288,9 +288,9 @@ func TestHandle(t *testing.T) {
 					return nil
 				}
 			},
-			expectedStatusCode:   200,
-			expectedBodyContains: "Hello from the database, lovely world!",
-			expectError:          false,
+			expectedStatusCode:   500,
+			expectedBodyContains: "Failed to retrieve message",
+			expectError:          true,
 		},
 	}
 
