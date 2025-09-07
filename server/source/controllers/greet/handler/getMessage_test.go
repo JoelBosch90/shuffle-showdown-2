@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"greet/mocks"
@@ -29,7 +30,7 @@ func TestGetMessage(t *testing.T) {
 			setupMock: func(mockClient *mocks.MockDynamoDBClient, expectedCtx context.Context) {
 				// Create the expected input
 				expectedInput := &dynamodb.GetItemInput{
-					TableName: aws.String(TableName),
+					TableName: aws.String(os.Getenv("TABLE_NAME")),
 					Key: map[string]types.AttributeValue{
 						MessagePartitionKeyName: &types.AttributeValueMemberS{Value: MessagePartitionKeyValue},
 					},
@@ -84,6 +85,7 @@ func TestGetMessage(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
+			os.Setenv("TABLE_NAME", "HelloWorldTable")
 
 			mockContext := mocks.GetMockContext()
 			mockClient := mocks.NewMockDynamoDBClient(ctrl)
