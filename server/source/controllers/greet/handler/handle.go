@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"errors"
+	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -32,6 +33,8 @@ func HandleWithDependencies(
 			}, getError
 		}
 	}
+
+	log.Println("DynamoDB GetItem result:", result, getError)
 
 	messageAttr, exists := result.Item[MessagePartitionPropertyName]
 	if exists {
