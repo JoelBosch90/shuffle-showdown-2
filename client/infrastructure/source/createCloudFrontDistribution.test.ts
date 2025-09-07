@@ -136,6 +136,34 @@ describe('createCloudFrontDistribution', () => {
     });
   });
 
+  it('sets the default behavior with the correct bucket access policy', () => {
+    const mockStack = new Stack();
+    const mockBucket = new Bucket(mockStack, mockBucketName);
+
+    createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
+
+    expect(mockGetApiGatewayOrigin).toHaveBeenCalled();
+    Template.fromStack(mockStack).hasResourceProperties('AWS::S3::BucketPolicy', {
+      Bucket: { Ref: Match.stringLikeRegexp(`mockbucket.*`) },
+      PolicyDocument: {
+        Statement: Match.arrayWith([
+          Match.objectLike({
+            Action: 's3:GetObject',
+            Effect: 'Allow',
+            Principal: {
+              Service: 'cloudfront.amazonaws.com',
+            },
+            Condition: {
+              StringEquals: {
+                'AWS:SourceArn': Match.anyValue(),
+              },
+            },
+          }),
+        ]),
+      },
+    });
+  });
+
   it('sets the default behavior for the correct cache configurations', () => {
     const mockStack = new Stack();
     const mockBucket = new Bucket(mockStack, mockBucketName);

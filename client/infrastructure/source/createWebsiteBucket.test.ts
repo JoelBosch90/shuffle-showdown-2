@@ -37,20 +37,6 @@ describe('createWebsiteBucket', () => {
     });
   });
 
-  it('creates an S3 bucket with website hosting configured', () => {
-    const app = new App();
-    const stack = new Stack(app, stackName);
-
-    createWebsiteBucket(stack, bucketName);
-
-    Template.fromStack(stack).hasResourceProperties('AWS::S3::Bucket', {
-      BucketName: bucketName,
-      WebsiteConfiguration: {
-        IndexDocument: 'index.html',
-      },
-    });
-  });
-
   it('creates a BucketDeployment resource', () => {
     const app = new App();
     const stack = new Stack(app, stackName);

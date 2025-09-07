@@ -1,11 +1,12 @@
 import { Stack, Duration } from 'aws-cdk-lib';
-import { AllowedMethods, CachePolicy, Distribution, OriginAccessIdentity, OriginProtocolPolicy, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
-import { HttpOrigin, S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { AllowedMethods, CachePolicy, Distribution, OriginRequestPolicy, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
+import { S3BucketOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { createCertificate } from './createCertificate';
 import { isLocalEnvironment } from './isLocalEnvironment';
 import { getApiPath } from './getApiPath';
 import { getApiGatewayOrigin } from './getApiGatewayOrigin';
+import { Effect, PolicyStatement, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 
 /**
  *  This function creates a CloudFront distribution for the website bucket.
@@ -21,20 +22,10 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
   const apiPath = `/${getApiPath()}/*`;
   const indexDocument = '/index.html';
 
-  // Create Origin Access Identity for S3 access
-  const originAccessIdentity = new OriginAccessIdentity(stack, 'WebsiteOAI', {
-    comment: 'OAI for website bucket'
-  });
-
-  // Grant CloudFront access to the bucket
-  bucket.grantRead(originAccessIdentity);
-
   const distribution = new Distribution(stack, 'WebsiteDistribution', {
     domainNames: domainName ? [domainName] : undefined,
     defaultBehavior: {
-      origin: new S3Origin(bucket, {
-        originAccessIdentity
-      }),
+      origin: S3BucketOrigin.withOriginAccessControl(bucket),
       allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
       compress: true,
       viewerProtocolPolicy,
@@ -64,6 +55,18 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
     ],
     certificate: domainName ? certificate : undefined,
   });
+
+  bucket.addToResourcePolicy(new PolicyStatement({
+    effect: Effect.ALLOW,
+    principals: [new ServicePrincipal('cloudfront.amazonaws.com')],
+    actions: ['s3:GetObject'],
+    resources: [`${bucket.bucketArn}/*`],
+    conditions: {
+      StringEquals: {
+        'AWS:SourceArn': `arn:aws:cloudfront::${stack.account}:distribution/${distribution.distributionId}`,
+      },
+    },
+  }));
 
   return distribution;
 };
