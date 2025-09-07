@@ -211,7 +211,6 @@ describe('createCloudFrontDistribution', () => {
     Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
       DistributionConfig: {
         AdditionalBehaviors: Match.absent(),
-        CacheBehaviors: Match.absent(),
       },
     });
   });

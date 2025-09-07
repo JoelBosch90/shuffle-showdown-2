@@ -24,20 +24,41 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
 
   const distribution = new Distribution(stack, 'WebsiteDistribution', {
     domainNames: domainName ? [domainName] : undefined,
+    defaultRootObject: indexDocument,
     defaultBehavior: {
       origin: S3BucketOrigin.withOriginAccessControl(bucket),
       allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
       compress: true,
       viewerProtocolPolicy,
+      cachePolicy: CachePolicy.CACHING_DISABLED,
     },
-    additionalBehaviors: isLocalEnvironment() ? {} : {
-      [apiPath]: {
-        origin: getApiGatewayOrigin(stack),
-        allowedMethods: AllowedMethods.ALLOW_ALL,
-        cachePolicy: CachePolicy.CACHING_DISABLED,
-        originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+    additionalBehaviors: {
+      // Don't cache HTML files (so they always get the latest version)
+      '*.html': {
+        origin: S3BucketOrigin.withOriginAccessControl(bucket),
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
+        compress: true,
         viewerProtocolPolicy,
+        cachePolicy: CachePolicy.CACHING_DISABLED,
       },
+      '/': {
+        origin: S3BucketOrigin.withOriginAccessControl(bucket),
+        allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
+        compress: true,
+        viewerProtocolPolicy,
+        cachePolicy: CachePolicy.CACHING_DISABLED,
+      },
+
+      // Add the API Gateway origin only if not in a local environment
+      ...isLocalEnvironment() ? {} : {
+        [apiPath]: {
+          origin: getApiGatewayOrigin(stack),
+          allowedMethods: AllowedMethods.ALLOW_ALL,
+          cachePolicy: CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          viewerProtocolPolicy,
+        },
+      }
     },
     errorResponses: [
       {
