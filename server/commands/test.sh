@@ -47,7 +47,7 @@ test_directory() {
   # Exit with an error if the test coverage is below the threshold.
   if [ $coverage -lt $TEST_COVERAGE_THRESHOLD ]; then
     echo Test coverage fails the threshold of $TEST_COVERAGE_THRESHOLD%
-    # exit 1
+    exit 1
   else
     echo Test coverage meets the threshold of $TEST_COVERAGE_THRESHOLD%
   fi

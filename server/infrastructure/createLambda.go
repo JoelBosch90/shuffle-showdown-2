@@ -6,7 +6,6 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 	"github.com/aws/jsii-runtime-go"
@@ -23,11 +22,7 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		},
 	})
 
-	lambda.AddToRolePolicy(awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
-		Effect:    awsiam.Effect_ALLOW,
-		Actions:   jsii.Strings("dynamodb:GetItem", "dynamodb:PutItem"),
-		Resources: jsii.Strings(*parameters.Table.TableArn()),
-	}))
+	parameters.Table.GrantReadWriteData(lambda)
 
 	api := newApi(stack, jsii.String(parameters.Gateway), &awsapigateway.LambdaRestApiProps{
 		Handler: lambda,
@@ -55,9 +50,6 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		StringValue:   api.Url(),
 		Description:   jsii.String("API Gateway URL for the application"),
 	})
-
-	parameters.Table.GrantReadWriteData(lambda)
-	lambda.AddEnvironment(jsii.String("TABLE_NAME"), parameters.Table.TableName(), nil)
 
 	return lambda
 }
