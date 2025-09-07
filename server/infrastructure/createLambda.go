@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
+	"github.com/aws/aws-cdk-go/awscdk/v2/awsiam"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 	"github.com/aws/jsii-runtime-go"
@@ -17,7 +18,16 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 		Handler:      jsii.String("bootstrap"),
 		Code:         awslambda.Code_FromAsset(jsii.String(parameters.SourcePath), nil),
 		Architecture: awslambda.Architecture_ARM_64(),
+		Environment: &map[string]*string{
+			"TABLE_NAME": parameters.Table.TableName(),
+		},
 	})
+
+	lambda.AddToRolePolicy(awsiam.NewPolicyStatement(&awsiam.PolicyStatementProps{
+		Effect:    awsiam.Effect_ALLOW,
+		Actions:   jsii.Strings("dynamodb:GetItem", "dynamodb:PutItem"),
+		Resources: jsii.Strings(*parameters.Table.TableArn()),
+	}))
 
 	api := newApi(stack, jsii.String(parameters.Gateway), &awsapigateway.LambdaRestApiProps{
 		Handler: lambda,
