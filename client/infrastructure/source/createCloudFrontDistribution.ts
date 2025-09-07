@@ -30,7 +30,7 @@ export const createCloudFrontDistribution = (stack: Stack, bucket: Bucket, domai
       allowedMethods: AllowedMethods.ALLOW_GET_HEAD,
       compress: true,
       viewerProtocolPolicy,
-      cachePolicy: CachePolicy.CACHING_DISABLED,
+      cachePolicy: CachePolicy.CACHING_OPTIMIZED,
     },
     additionalBehaviors: {
       // Don't cache HTML files (so they always get the latest version)

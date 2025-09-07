@@ -215,6 +215,28 @@ describe('createCloudFrontDistribution', () => {
     });
   });
 
+  it('disables caching for HTML files', () => {
+    const mockStack = new Stack();
+    const mockBucket = new Bucket(mockStack, mockBucketName);
+
+    createCloudFrontDistribution(mockStack, mockBucket, mockDomainName);
+
+    Template.fromStack(mockStack).hasResourceProperties('AWS::CloudFront::Distribution', {
+      DistributionConfig: {
+        CacheBehaviors: Match.arrayWith([
+          Match.objectLike({
+            PathPattern: '*.html',
+            CachePolicyId: Match.stringLikeRegexp('.*'),
+          }),
+          Match.objectLike({
+            PathPattern: '/',
+            CachePolicyId: Match.stringLikeRegexp('.*'),
+          }),
+        ]),
+      },
+    });
+  });
+
   it('creates a CloudFront distribution with a 403 error response', () => {
     const mockStack = new Stack();
     const mockBucket = new Bucket(mockStack, mockBucketName);
