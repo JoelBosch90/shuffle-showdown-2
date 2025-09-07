@@ -16,45 +16,49 @@ func HandleWithDependencies(
 	callSetMessage func(context.Context) error,
 ) (events.APIGatewayProxyResponse, error) {
 	result, getError := callGetMessage(ctx)
-	log.Printf("First getMessage - error: %v, item count: %d", getError, len(result.Item))
-
 	if getError != nil {
-		log.Println("Creating message...")
-		setError := callSetMessage(ctx)
-		log.Printf("setMessage - error: %v", setError)
-		if setError != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-				Body:       "Failed to set database record",
-			}, setError
-		}
-
-		result, getError = callGetMessage(ctx)
-		log.Printf("Second getMessage - error: %v, item count: %d", getError, len(result.Item))
-
-		if getError != nil {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 500,
-				Body:       "Failed to get database record",
-			}, getError
-		}
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Failed to retrieve message",
+		}, getError
 	}
 
-	log.Printf("Final result.Item: %+v", result.Item)
-	log.Printf("Looking for key: %s", MessagePartitionPropertyName)
-
-	messageAttr, exists := result.Item[MessagePartitionPropertyName]
-	if exists {
-		message, ok := messageAttr.(*types.AttributeValueMemberS)
-		if ok {
-			return events.APIGatewayProxyResponse{
-				StatusCode: 200,
-				Body:       message.Value,
-			}, nil
-		}
+	messageAttribute, exists := result.Item[MessagePartitionPropertyName]
+	message, ok := messageAttribute.(*types.AttributeValueMemberS)
+	if len(result.Item) > 0 && exists && ok {
+		log.Printf("Found existing message: %s", message.Value)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       message.Value,
+		}, nil
 	}
 
-	log.Printf("Message attribute missing or of wrong type in result.Item: %+v with messageAttr %+v and error %v", result.Item, messageAttr, getError)
+	log.Println("No existing message found, creating new one...")
+	setError := callSetMessage(ctx)
+	if setError != nil {
+		log.Printf("setMessage failed: %v", setError)
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Failed to save message",
+		}, setError
+	}
+
+	result2, getError2 := callGetMessage(ctx)
+	if getError2 != nil {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 500,
+			Body:       "Failed to retrieve message",
+		}, getError2
+	}
+
+	messageAttribute2, exists2 := result2.Item[MessagePartitionPropertyName]
+	message2, ok2 := messageAttribute2.(*types.AttributeValueMemberS)
+	if len(result2.Item) > 0 && exists2 && ok2 {
+		return events.APIGatewayProxyResponse{
+			StatusCode: 200,
+			Body:       message2.Value,
+		}, nil
+	}
 
 	return events.APIGatewayProxyResponse{
 		StatusCode: 500,
