@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -26,17 +25,14 @@ func HandleWithDependencies(
 	messageAttribute, exists := result.Item[MessagePartitionPropertyName]
 	message, ok := messageAttribute.(*types.AttributeValueMemberS)
 	if len(result.Item) > 0 && exists && ok {
-		log.Printf("Found existing message: %s", message.Value)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 200,
 			Body:       message.Value,
 		}, nil
 	}
 
-	log.Println("No existing message found, creating new one...")
 	setError := callSetMessage(ctx)
 	if setError != nil {
-		log.Printf("setMessage failed: %v", setError)
 		return events.APIGatewayProxyResponse{
 			StatusCode: 500,
 			Body:       "Failed to save message",
