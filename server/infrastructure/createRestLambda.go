@@ -11,7 +11,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newStringParameter interfaces.NewStringParameter) awslambda.Function {
+func createRestLambdaWithDependencies(stack awscdk.Stack, parameters interfaces.RestLambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newStringParameter interfaces.NewStringParameter) awslambda.Function {
 	lambda := newFunction(stack, jsii.String(parameters.Name), &awslambda.FunctionProps{
 		Runtime:      awslambda.Runtime_PROVIDED_AL2(),
 		Handler:      jsii.String("bootstrap"),
@@ -41,7 +41,7 @@ func createLambda(stack awscdk.Stack, parameters interfaces.LambdaParameters, ne
 	apiProxy := api.Root().AddResource(jsii.String(os.Getenv("PUBLIC_SHUFFLE_SHOWDOWN_API_PATH")), &awsapigateway.ResourceOptions{})
 	integration := newIntegration(lambda, &awsapigateway.LambdaIntegrationOptions{})
 
-	lambdaEndpoint := apiProxy.AddResource(jsii.String(parameters.UrlPath), &awsapigateway.ResourceOptions{})
+	lambdaEndpoint := apiProxy.AddResource(jsii.String(parameters.Route), &awsapigateway.ResourceOptions{})
 	lambdaEndpoint.AddMethod(jsii.String("GET"), integration, &awsapigateway.MethodOptions{})
 
 	apiGateWayUrlName := os.Getenv("PRIVATE_API_GATEWAY_URL_NAME")

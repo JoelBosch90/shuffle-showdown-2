@@ -68,11 +68,11 @@ func (m *MockNewStringParameter) Get() interfaces.NewStringParameter {
 	}
 }
 
-func TestCreateLambda(t *testing.T) {
+func TestCreateRestLambda(t *testing.T) {
 	controller := gomock.NewController(t)
 	defer controller.Finish()
 
-	t.Run("interfaces.createLambda", func(t *testing.T) {
+	t.Run("interfaces.createRestLambda", func(t *testing.T) {
 		// SETUP
 		t.Parallel()
 		mockUrl := "https://example.com"
@@ -88,10 +88,10 @@ func TestCreateLambda(t *testing.T) {
 
 		mockLambdaResource := mocks.NewMockResource(controller)
 		mockLambdaResource.EXPECT().AddMethod(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
-		mockLambdaParameters := interfaces.LambdaParameters{
+		mockLambdaParameters := interfaces.RestLambdaParameters{
 			Name:       "GreetFunction",
 			SourcePath: "../controllers/greet",
-			UrlPath:    "hello",
+			Route:      "hello",
 			Gateway:    "HelloWorldGateway",
 			Table:      mockTable,
 		}
@@ -116,7 +116,7 @@ func TestCreateLambda(t *testing.T) {
 		mockFunction.EXPECT().AddEnvironment(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 
 		// WHEN
-		createLambda(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewStringParameter.Get())
+		createRestLambdaWithDependencies(mockStack, mockLambdaParameters, mockNewFunction.Get(), mockNewApi.Get(), mockNewIntegration.Get(), mockNewStringParameter.Get())
 
 		// THEN
 		newFunctionTimesCalled := mockNewFunction.TimesCalled()

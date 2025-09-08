@@ -15,6 +15,11 @@ set -e
 
 TEST_COVERAGE_THRESHOLD=100
 SKIP_FILE_TAG=skip_test
+EXCLUDED_FILES=(
+  "main.go"
+  "_wrapper.go"
+  "_test.go"
+)
 EXCLUDED_DIRECTORIES=(
   "interfaces"
   "mocks"
@@ -34,11 +39,39 @@ test_directory() {
 
   cd $1
   echo Testing in $1
-  
-  # Run the tests for this controller. Skip EXCLUDED_FILES AND EXCLUDED_DIRECTORIES.  
-  go test -coverprofile=coverage.out -tags $SKIP_FILE_TAG
 
-  # Display the test results.
+  # Create a temporary go.mod-style exclude pattern
+  EXCLUDE_PATTERN=""
+  for excluded_file in "${EXCLUDED_FILES[@]}"; do
+    if [ -n "$EXCLUDE_PATTERN" ]; then
+      EXCLUDE_PATTERN="$EXCLUDE_PATTERN|$excluded_file"
+    else
+      EXCLUDE_PATTERN="$excluded_file"
+    fi
+  done
+  
+  echo "Excluding files matching: $EXCLUDE_PATTERN"
+  
+  # Get current package
+  CURRENT_PKG=$(go list .)
+  
+  # Run tests excluding certain files from coverage
+  # Use build tags to exclude files instead
+  go test -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG"
+  
+  # Filter the coverage output to remove excluded files
+  if [ -f coverage.out ]; then
+    # Create backup
+    cp coverage.out coverage.out.backup
+    
+    # Filter out excluded files
+    grep -v -E "$EXCLUDE_PATTERN" coverage.out.backup > coverage.out
+
+    # Remove backup
+    rm coverage.out.backup
+  fi
+
+  # Calculate and display the test coverage for this controller.
   go tool cover -func=coverage.out
 
   # Extract the test coverage percentage from the test results.

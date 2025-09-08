@@ -1,6 +1,3 @@
-//go:build !skip_test
-// +build !skip_test
-
 package main
 
 import (

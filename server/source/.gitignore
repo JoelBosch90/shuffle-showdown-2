@@ -10,6 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+*.out.backup
 
 # go.sum should be committed
 !go.sum

@@ -39,7 +39,7 @@ func TestCreateTable(t *testing.T) {
 		mockNewTable := mockNewTable{}
 
 		// WHEN
-		createTable(mockStack, mockTableParameters, mockNewTable.Get())
+		createTableWithDependencies(mockStack, mockTableParameters, mockNewTable.Get())
 
 		// THEN
 		newTableTimesCalled := mockNewTable.TimesCalled()

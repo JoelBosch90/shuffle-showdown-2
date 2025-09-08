@@ -10,4 +10,4 @@ type TableParameters struct {
 	PartitionKeyName string
 }
 
-type CreateTable func(stack awscdk.Stack, params TableParameters, newTable NewTable) awsdynamodb.Table
+type CreateTable func(stack awscdk.Stack, params TableParameters) awsdynamodb.Table

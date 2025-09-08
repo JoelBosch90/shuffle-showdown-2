@@ -8,7 +8,7 @@ import (
 	"github.com/aws/jsii-runtime-go"
 )
 
-func createTable(stack awscdk.Stack, parameters interfaces.TableParameters, newTable interfaces.NewTable) awsdynamodb.Table {
+func createTableWithDependencies(stack awscdk.Stack, parameters interfaces.TableParameters, newTable interfaces.NewTable) awsdynamodb.Table {
 	return newTable(stack, jsii.String(parameters.ID), &awsdynamodb.TableProps{
 		PartitionKey: &awsdynamodb.Attribute{
 			Name: jsii.String(parameters.PartitionKeyName),

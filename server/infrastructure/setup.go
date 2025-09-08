@@ -4,59 +4,61 @@ import (
 	"infrastructure/interfaces"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awsssm"
 )
 
-func setup(
-	createApp interfaces.NewApp,
-	createStack interfaces.NewStack,
-	createLambda interfaces.CreateLambda,
-	createTable interfaces.CreateTable,
-	newLambdaRestApi interfaces.NewLambdaRestApi,
-	newLambdaIntegration interfaces.NewLambdaIntegration,
+func setupWithDependencies(
+	createAppFunc interfaces.NewApp,
+	createStackFunc interfaces.NewStack,
+	createRestLambdaFunc interfaces.CreateRestLambda,
+	createSocketLambdasFunc interfaces.CreateSocketLambdas,
+	createTableFunc interfaces.CreateTable,
 	closeRunTime func(),
-	environment *awscdk.Environment,
 ) {
 	defer closeRunTime()
 
-	app := createApp(nil)
+	app := createAppFunc(nil)
 
 	stackId := "ServerStack"
-	stack := createStack(
+	stack := createStackFunc(
 		app,
 		&stackId,
-		&awscdk.StackProps{
-			Env: environment,
-		},
+		&awscdk.StackProps{},
 	)
 
-	helloWorldTable := createTable(stack, interfaces.TableParameters{
+	helloWorldTable := createTableFunc(stack, interfaces.TableParameters{
 		ID:               "HelloWorldTable",
 		PartitionKeyName: "PK",
-	}, awsdynamodb.NewTable)
+	})
 
-	lambdasToCreate := []interfaces.LambdaParameters{
+	restLambdasToCreate := []interfaces.RestLambdaParameters{
 		{
 			Name:       "GreetFunction",
 			SourcePath: "../source/controllers/greet",
-			UrlPath:    "hello",
+			Route:      "hello",
 			Gateway:    "HelloWorldGateway",
 			Table:      helloWorldTable,
 		},
 	}
 
-	for _, lambdaParams := range lambdasToCreate {
-		createLambda(
-			stack,
-			lambdaParams,
-			awslambda.NewFunction,
-			newLambdaRestApi,
-			newLambdaIntegration,
-			awsssm.NewStringParameter,
-		)
+	for _, restLambdaParams := range restLambdasToCreate {
+		createRestLambdaFunc(stack, restLambdaParams)
 	}
+
+	connectionsTable := createTableFunc(stack, interfaces.TableParameters{
+		ID:               "Connections",
+		PartitionKeyName: "PK",
+	})
+
+	socketLambdasToCreate := []interfaces.SocketLambdaParameters{
+		{
+			Name:       "WebSocketFunction",
+			SourcePath: "../source/controllers/connect",
+			Route:      "$connect",
+			Table:      connectionsTable,
+		},
+	}
+
+	createSocketLambdasFunc(stack, socketLambdasToCreate)
 
 	app.Synth(nil)
 }

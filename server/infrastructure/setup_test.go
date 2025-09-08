@@ -7,10 +7,8 @@ import (
 	"infrastructure/mocks"
 
 	"github.com/aws/aws-cdk-go/awscdk/v2"
-	"github.com/aws/aws-cdk-go/awscdk/v2/awsapigateway"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awsdynamodb"
 	"github.com/aws/aws-cdk-go/awscdk/v2/awslambda"
-	"github.com/aws/constructs-go/constructs/v10"
 	"github.com/golang/mock/gomock"
 )
 
@@ -43,12 +41,24 @@ func (m *mockNewStack) Get() interfaces.NewStack {
 	}
 }
 
-type mockCreateLambda struct {
+type mockCreateRestLambda struct {
 	mocks.Function
 }
 
-func (m *mockCreateLambda) Get() interfaces.CreateLambda {
-	return func(stack awscdk.Stack, params interfaces.LambdaParameters, newFunction interfaces.NewFunction, newApi interfaces.NewLambdaRestApi, newIntegration interfaces.NewLambdaIntegration, newStringParameter interfaces.NewStringParameter) awslambda.Function {
+func (m *mockCreateRestLambda) Get() interfaces.CreateRestLambda {
+	return func(stack awscdk.Stack, params interfaces.RestLambdaParameters) awslambda.Function {
+		m.SetTimesCalled(m.TimesCalled() + 1)
+
+		return nil
+	}
+}
+
+type mockCreateSocketLambdas struct {
+	mocks.Function
+}
+
+func (m *mockCreateSocketLambdas) Get() interfaces.CreateSocketLambdas {
+	return func(stack awscdk.Stack, params []interfaces.SocketLambdaParameters) awslambda.Function {
 		m.SetTimesCalled(m.TimesCalled() + 1)
 
 		return nil
@@ -60,31 +70,7 @@ type mockCreateTable struct {
 }
 
 func (m *mockCreateTable) Get() interfaces.CreateTable {
-	return func(stack awscdk.Stack, params interfaces.TableParameters, newTable interfaces.NewTable) awsdynamodb.Table {
-		m.SetTimesCalled(m.TimesCalled() + 1)
-
-		return nil
-	}
-}
-
-type mockNewLambdaRestApi struct {
-	mocks.Function
-}
-
-func (m *mockNewLambdaRestApi) Get() interfaces.NewLambdaRestApi {
-	return func(scope constructs.Construct, id *string, props *awsapigateway.LambdaRestApiProps) interfaces.RestApi {
-		m.SetTimesCalled(m.TimesCalled() + 1)
-
-		return nil
-	}
-}
-
-type mockNewLambdaIntegration struct {
-	mocks.Function
-}
-
-func (m *mockNewLambdaIntegration) Get() interfaces.NewLambdaIntegration {
-	return func(handler awslambda.IFunction, options *awsapigateway.LambdaIntegrationOptions) awsapigateway.LambdaIntegration {
+	return func(stack awscdk.Stack, params interfaces.TableParameters) awsdynamodb.Table {
 		m.SetTimesCalled(m.TimesCalled() + 1)
 
 		return nil
@@ -105,14 +91,13 @@ func TestSetup(t *testing.T) {
 		mockNewApp := mockNewApp{}
 		mockNewApp.SetApp(mockApp)
 		mockNewStack := mockNewStack{}
-		mockCreateLambda := mockCreateLambda{}
+		mockCreateRestLambda := mockCreateRestLambda{}
+		mockCreateSocketLambdas := mockCreateSocketLambdas{}
 		mockCreateTable := mockCreateTable{}
-		mockNewLambdaRestApi := mockNewLambdaRestApi{}
-		mockNewLambdaIntegration := mockNewLambdaIntegration{}
 		mockCloseRuntime := mocks.Function{}
 
 		// WHEN
-		setup(mockNewApp.Get(), mockNewStack.Get(), mockCreateLambda.Get(), mockCreateTable.Get(), mockNewLambdaRestApi.Get(), mockNewLambdaIntegration.Get(), mockCloseRuntime.Get(), nil)
+		setupWithDependencies(mockNewApp.Get(), mockNewStack.Get(), mockCreateRestLambda.Get(), mockCreateSocketLambdas.Get(), mockCreateTable.Get(), mockCloseRuntime.Get())
 
 		// THEN
 		appCreatorCalled := mockNewApp.TimesCalled()
@@ -123,13 +108,17 @@ func TestSetup(t *testing.T) {
 		if createStackCalled != 1 {
 			t.Errorf("Expected NewStack to be called once, but was called %d times", createStackCalled)
 		}
-		createLambdaCalled := mockCreateLambda.TimesCalled()
-		if createLambdaCalled != 1 {
-			t.Errorf("Expected CreateLambda to be called once, but was called %d times", createLambdaCalled)
+		createRestLambdaCalled := mockCreateRestLambda.TimesCalled()
+		if createRestLambdaCalled != 1 {
+			t.Errorf("Expected CreateRestLambda to be called once, but was called %d times", createRestLambdaCalled)
+		}
+		createSocketLambdaCalled := mockCreateSocketLambdas.TimesCalled()
+		if createSocketLambdaCalled != 1 {
+			t.Errorf("Expected CreateSocketLambda to be called once, but was called %d times", createSocketLambdaCalled)
 		}
 		createTableCalled := mockCreateTable.TimesCalled()
-		if createTableCalled != 1 {
-			t.Errorf("Expected CreateTable to be called once, but was called %d times", createTableCalled)
+		if createTableCalled != 2 {
+			t.Errorf("Expected CreateTable to be called twice, but was called %d times", createTableCalled)
 		}
 		closeRuntimeCalled := mockCloseRuntime.TimesCalled()
 		if closeRuntimeCalled != 1 {
