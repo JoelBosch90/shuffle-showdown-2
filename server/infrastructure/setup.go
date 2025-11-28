@@ -51,7 +51,7 @@ func setupWithDependencies(
 
 	socketLambdasToCreate := []interfaces.SocketLambdaParameters{
 		{
-			Name:       "WebSocketFunction",
+			Name:       "ConnectFunction",
 			SourcePath: "../source/controllers/connect",
 			Route:      "$connect",
 			Table:      connectionsTable,
