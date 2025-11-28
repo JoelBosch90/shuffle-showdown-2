@@ -13,4 +13,4 @@ type SocketLambdaParameters struct {
 	Table      awsdynamodb.Table
 }
 
-type CreateSocketLambdas func(stack awscdk.Stack, params []SocketLambdaParameters) awslambda.Function
+type CreateSocketLambdas func(stack awscdk.Stack, params []SocketLambdaParameters) []awslambda.Function
