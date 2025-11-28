@@ -31,7 +31,7 @@ build_directory() {
     cd $1
 
     go mod tidy
-    go build -o bootstrap -buildvcs=false
+    go build -o bootstrap
     echo Built $1
     
     cd - > /dev/null
