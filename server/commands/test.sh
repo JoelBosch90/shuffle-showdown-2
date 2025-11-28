@@ -57,7 +57,7 @@ test_directory() {
   
   # Run tests excluding certain files from coverage
   # Use build tags to exclude files instead
-  go test -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG" -buildvcs=false
+  go test -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG"
   
   # Filter the coverage output to remove excluded files
   if [ -f coverage.out ]; then

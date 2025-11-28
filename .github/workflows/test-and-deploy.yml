@@ -51,6 +51,8 @@ jobs:
     container: node:22-bullseye # AWS CDK uses a JSII layer that requires Node.js
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     - uses: actions/setup-go@v5
       with:
         cache: false
