@@ -53,8 +53,10 @@ test_directory() {
   echo "Excluding files matching: $EXCLUDE_PATTERN"
   
   # Get current package
-  CURRENT_PKG=$(go list .)
-  
+  CURRENT_PKG=$(go list -buildvcs=false .)
+
+  echo "In between"
+
   # Run tests excluding certain files from coverage
   # Use build tags to exclude files instead
   go test -buildvcs=false -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG" -v || {
