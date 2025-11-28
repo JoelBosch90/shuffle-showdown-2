@@ -55,18 +55,9 @@ test_directory() {
   # Get current package
   CURRENT_PKG=$(go list -buildvcs=false .)
 
-  echo "In between"
-
   # Run tests excluding certain files from coverage
   # Use build tags to exclude files instead
-  go test -buildvcs=false -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG" -v || {
-    echo "ERROR: go test failed"
-    echo "Retrying without coverage profile..."
-    go test -buildvcs=false -tags "$SKIP_FILE_TAG" -v || {
-      echo "ERROR: go test failed even without coverage"
-      exit 1
-    }
-  }
+  go test -coverprofile=coverage.out -coverpkg="$CURRENT_PKG" -tags "$SKIP_FILE_TAG"
   
   # Filter the coverage output to remove excluded files
   if [ -f coverage.out ]; then
