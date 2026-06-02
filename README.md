@@ -17,13 +17,17 @@ This follow-up version aims to add the following features to Shuffle Showdown:
  - More iterations on the user interface
  - New features
 
-## Prerequisites
- - Install docker (https://docs.docker.com/engine/install/)
- - Install docker-compose (https://docs.docker.com/compose/install/linux/)
- - Install aws-cdk-local & aws-cdk (`npm install -g aws-cdk-local aws-cdk`)
- - Install LocalStack (https://docs.localstack.cloud/getting-started/installation/)
+## Assumptions
+The install commands assume a Ubuntu system running on an AMD64 processor. If this does not apply, you cannot rely on the automated install script. You can view the install script at `server/commands/install.sh` and read the comments to find the original sources for the installation commands, so that you may adapt for your system's needs.
+
+## Install commands
+ - Allow commands file to run: `sudo chmod +x commands.sh`
+ - Add shortcut to run commands anywhere: `sudo ln -s $(pwd)/commands.sh /usr/bin/shuffle`
+ - Run `sudo shuffle install` to install the global dependencies
+ - Run `source ~/.bashrc` to load the new PATH variables
 
 ## Useful commands
+ - `shuffle install`    Installs all global dependencies.
  - `shuffle run`        Spins up a local development environment.
  - `shuffle mock`       Generates mocks for all applications.
  - `shuffle test`       Runs the full test suite for all applications.

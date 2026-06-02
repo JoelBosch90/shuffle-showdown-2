@@ -47,6 +47,19 @@ WORKING_DIRECTORY="$(dirname "$(readlink -f "$0")")"
 SERVER_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/server/commands"
 CLIENT_COMMANDS_DIRECTORY="$WORKING_DIRECTORY/client/commands"
 
+
+################################################################################
+#
+#   install
+#       Function to install all applications.
+#
+################################################################################
+install () {
+  cd $SERVER_COMMANDS_DIRECTORY
+
+  ./install.sh
+}
+
 ################################################################################
 #
 #   mock_server
@@ -342,6 +355,12 @@ while [[ $# -gt 0 ]]; do
 
   # Determine per command what to do.
   case "$command" in
+
+    # Run `shuffle install` to install all global dependencies.
+    install)
+      install
+      shift # Get ready to process the next command.
+      ;;
 
     # Run `shuffle run` to spin up a local development environment.
     run)
